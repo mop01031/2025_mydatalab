@@ -2,3 +2,10 @@ streamlit
 pandas
 matplotlib
 scikit-learn
+google-generativeai
+streamlit-extras
+st-clickable-images
+tomli; python_version < "3.11"
+fastapi
+uvicorn
+pydantic
