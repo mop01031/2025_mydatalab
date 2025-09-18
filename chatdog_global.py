@@ -124,16 +124,19 @@ def mount_chatdog(
   }}
 
   #fab {{
-    position: fixed;
-    right: ${'{' }FAB_RIGHT{ '}' }px;
-    bottom: calc(${'{' }FAB_BOTTOM{ '}' }px + var(--safe-bottom));
-    width: ${'{' }FAB_SIZE{ '}' }px;
-    height: ${'{' }FAB_SIZE{ '}' }px;
-    background: transparent url(${{DOG_B64}}) center/contain no-repeat;
-    border: 0; cursor: pointer;
-    filter: drop-shadow(0 10px 14px rgba(2,6,23,.18));
-    pointer-events: auto;
-  }}
+  position: fixed;
+  right: ${'{' }FAB_RIGHT{ '}' }px;
+  bottom: calc(${'{' }FAB_BOTTOM{ '}' }px + var(--safe-bottom));
+
+  /* ✅ 연속 스케일: 최소~이상적(vw)~최대 */
+  width: clamp(96px, 22vw, ${'{' }FAB_SIZE{ '}' }px);
+  height: clamp(96px, 22vw, ${'{' }FAB_SIZE{ '}' }px);
+
+  background: transparent url(${{DOG_B64}}) center/contain no-repeat;
+  border: 0; cursor: pointer;
+  filter: drop-shadow(0 10px 14px rgba(2,6,23,.18));
+  pointer-events: auto;
+}}
 
   #panel {{
     position: fixed;
