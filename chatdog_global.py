@@ -117,51 +117,86 @@ def mount_chatdog(
 
   const root = host.attachShadow({{mode:"open"}});
   root.innerHTML = `
-    <style>
-      :host {{ all: initial; }}
-      #fab {{
-        position: fixed; right: ${'{' }FAB_RIGHT{ '}' }px; bottom: ${'{' }FAB_BOTTOM{ '}' }px;
-        width: ${'{' }FAB_SIZE{ '}' }px; height: ${'{' }FAB_SIZE{ '}' }px;
-        background: transparent url(${{DOG_B64}}) center/contain no-repeat;
-        border: 0; cursor: pointer; filter: drop-shadow(0 10px 14px rgba(2,6,23,.18));
-        pointer-events: auto;
-      }}
-      #panel {{
-        position: fixed; right: 0; top: ${{PANEL_TOP}};
-        width: ${{PANEL_W}}; height: ${{PANEL_H}};
-        transform: translateX(calc(100% + 48px));
-        background: #f8fafc; border-left:1px solid #e2e8f0;
-        box-shadow: -16px 0 36px rgba(2,6,23,.12);
-        transition: transform .2s ease-in-out;
-        display: grid; grid-template-rows: auto 1fr auto;
-        pointer-events: auto;
-      }}
-      #panel.open {{ transform: translateX(0%); }}
-      .hdr{{padding:10px 12px;background:#eff6ff;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:56px}}
-      .ttl{{margin:0;font:800 16px/1.2 system-ui;color:#0f172a}}
-      .sub{{margin:0;font:12px/1.2 system-ui;color:#475569}}
-      #close{{border:0;background:transparent;font:800 18px/1 system-ui;cursor:pointer;color:#334155}}
-      #body{{padding:12px 14px;overflow-y:auto;min-height:0}}
-      .msg{{margin:8px 0;display:flex;max-width:96%}}
-      .bubble{{
-        padding:10px 12px;border-radius:14px;border:1px solid #e2e8f0;background:#fff;
-        white-space: normal; line-height: 1.6; font-size: 15px;
-      }}
-      .bubble strong{{ font-weight: 800; }}
-      .bubble code{{
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: .9em; padding: 0 .35em; border-radius: 6px;
-        background:#f1f5f9; border:1px solid #e2e8f0;
-      }}
-      .bubble ul{{ margin:.25rem 0 .25rem 1.1rem; padding:0 }}
-      .bubble li{{ margin:.15rem 0 }}
-      .bubble p{{ margin:.35rem 0 }}
-      .msg.user{{justify-content:flex-end}}
-      .msg.user .bubble{{background:#dcfce7;border-color:#bbf7d0}}
-      .ftr{{border-top:1px solid #e2e0f0;background:#ffffffdd;backdrop-filter:blur(6px);padding:10px;display:grid;grid-template-columns:1fr 120px;gap:10px}}
-      #input{{height:44px;border:1px solid #cbd5e1;border-radius:12px;padding:0 12px;font:16px system-ui}}
-      #send{{height:44px;border:0;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;font:700 15px system-ui;cursor:pointer}}
-    </style>
+<style>
+  :host {{ 
+    all: initial; 
+    --safe-bottom: env(safe-area-inset-bottom, 0px); 
+  }}
+
+  #fab {{
+    position: fixed;
+    right: ${'{' }FAB_RIGHT{ '}' }px;
+    bottom: calc(${'{' }FAB_BOTTOM{ '}' }px + var(--safe-bottom));
+    width: ${'{' }FAB_SIZE{ '}' }px;
+    height: ${'{' }FAB_SIZE{ '}' }px;
+    background: transparent url(${{DOG_B64}}) center/contain no-repeat;
+    border: 0; cursor: pointer;
+    filter: drop-shadow(0 10px 14px rgba(2,6,23,.18));
+    pointer-events: auto;
+  }}
+
+  #panel {{
+    position: fixed;
+    right: 0;
+    top: ${{PANEL_TOP}};
+    width: ${{PANEL_W}};
+    height: ${{PANEL_H}};
+    transform: translateX(calc(100% + 48px));
+    background: #f8fafc;
+    border-left:1px solid #e2e8f0;
+    box-shadow: -16px 0 36px rgba(2,6,23,.12);
+    transition: transform .2s ease-in-out;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    pointer-events: auto;
+    z-index: 1001;
+  }}
+  #panel.open {{ transform: translateX(0%); }}
+
+  .hdr{{padding:10px 12px;background:#eff6ff;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:56px}}
+  .ttl{{margin:0;font:800 16px/1.2 system-ui;color:#0f172a}}
+  .sub{{margin:0;font:12px/1.2 system-ui;color:#475569}}
+  #close{{border:0;background:transparent;font:800 18px/1 system-ui;cursor:pointer;color:#334155}}
+  #body{{padding:12px 14px;overflow-y:auto;min-height:0}}
+  .msg{{margin:8px 0;display:flex;max-width:96%}}
+  .bubble{{
+    padding:10px 12px;border-radius:14px;border:1px solid #e2e8f0;background:#fff;
+    white-space: normal; line-height: 1.6; font-size: 15px;
+  }}
+  .bubble strong{{ font-weight: 800; }}
+  .bubble code{{
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .9em; padding: 0 .35em; border-radius: 6px;
+    background:#f1f5f9; border:1px solid #e2e8f0;
+  }}
+  .bubble ul{{ margin:.25rem 0 .25rem 1.1rem; padding:0 }}
+  .bubble li{{ margin:.15rem 0 }}
+  .bubble p{{ margin:.35rem 0 }}
+  .msg.user{{justify-content:flex-end}}
+  .msg.user .bubble{{background:#dcfce7;border-color:#bbf7d0}}
+
+  .ftr{{border-top:1px solid #e2e0f0;background:#ffffffdd;backdrop-filter:blur(6px);padding:10px;display:grid;grid-template-columns:1fr 120px;gap:10px}}
+  #input{{height:44px;border:1px solid #cbd5e1;border-radius:12px;padding:0 12px;font:16px system-ui}}
+  #send{{height:44px;border:0;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;font:700 15px system-ui;cursor:pointer}}
+
+  /* 반응형 오버라이드 */
+  @media (max-width: 1024px){{
+    #fab{{ width:100px; height:100px; }}
+    #panel{{ width:min(94vw,740px); height:72dvh; top:7dvh; }}
+  }}
+
+  @media (max-width: 640px){{
+    #fab{{ width:88px; height:88px; right:12px; }}
+    #panel{{ width:min(94vw,560px); height:74dvh; top:6dvh; }}
+    .ftr{{ grid-template-columns: 1fr 104px; }}
+  }}
+
+  @media (max-width: 380px){{
+    #fab{{ width:78px; height:78px; right:10px; }}
+    #panel{{ width:96vw; height:76dvh; top:5dvh; }}
+    .ftr{{ grid-template-columns: 1fr 96px; }}
+  }}
+</style>
 
     <button id="fab" aria-label="open chat"></button>
     <div id="panel" role="dialog" aria-label="chat panel">
