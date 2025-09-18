@@ -175,7 +175,6 @@ st.text_area(
 
 with st.sidebar:
     st.page_link("pages/1_home.py", label="HOME", icon="🏠")
-    st.page_link("app.py", label="소개하기",icon="🐶")
     st.markdown("---")
 
     st.markdown("## 📖 개념 익히기")

@@ -56,7 +56,6 @@ import chatdog_mount
 chatdog_mount.mount()
 
 with st.sidebar:
-    st.page_link("app.py", label="영상(?)",icon="🐶")
     st.page_link("pages/1_home.py", label="HOME", icon="🏠")
     st.markdown("---")
 

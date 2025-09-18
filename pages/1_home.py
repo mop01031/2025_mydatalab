@@ -33,14 +33,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <div style='color: black; font-size: 20px; text-align: right; margin-bottom: 6px;'>
-        *대상학년: 고등학교 2~3학년
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# --- 상단 좌/우 한 줄: 좌측 버튼 / 우측 텍스트
+left, right = st.columns([1, 5], vertical_alignment="center")  # 👈 핵심!
+
+with left:
+    if st.button("소개하기"):
+        st.switch_page("app.py")
+
+with right:
+    st.markdown(
+        "<p style='text-align:right; font-weight:600;'>· 대상학년: 고등학교 2~3학년</p>",
+        unsafe_allow_html=True
+    )
+
+
 
 from PIL import Image
 
@@ -103,7 +109,6 @@ st.success("왼쪽 메뉴 또는 위 카드에서 원하는 항목을 선택해 
 
 with st.sidebar:
     st.page_link("pages/1_home.py", label="HOME", icon="🏠")
-    st.page_link("app.py", label="소개하기",icon="🐶")
     st.markdown("---")
 
     st.markdown("## 📖 개념 익히기")

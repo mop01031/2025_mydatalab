@@ -1,91 +1,80 @@
 import streamlit as st
 from PIL import Image
-from pathlib import Path
-import importlib.util
-
 
 st.set_page_config(
     page_title="Dr.이음이와 떠나는 데이터 탐험",
     page_icon="🚀",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"   # 🔹 사이드바 기본 접기
 )
 
-# 🔒 자동 생성된 사이드바 메뉴 숨기기
-hide_default_sidebar = """
-    <style>
-    [data-testid="stSidebarNav"] {
-        display: none;
-    }
-    </style>
-"""
-st.markdown(hide_default_sidebar, unsafe_allow_html=True)
-
-
-#st.title("🚀 Dr.이음이와 떠나는 데이터 탐험")
-
-# 유튜브 영상
-st.video("https://youtu.be/x0lK0qsdLUo?si=o_m2xoL1vzRuSGJV")
-
-# 🌟 노랑-주황 버튼 (글씨 검정, 굵게, 정가운데)
+# 🔒 랜딩 페이지: 사이드바/헤더/툴바까지 전부 숨김
 st.markdown("""
-    <style>
-    div.stButton > button {
-        font-size: 32px;
-        font-family: 'Arial', 'Noto Sans KR', sans-serif;
-        font-weight: 800;
-        color: #000000;  /* 글씨 검정 */
-        padding: 16px 50px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, #FFE082 0%, #FFB300 100%);
-        border: none;
-        box-shadow: 0px 6px 15px rgba(0,0,0,0.25);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        display: block;
-        margin: 0 auto; /* 가운데 정렬 */
-    }
-    div.stButton > button:hover {
-        transform: scale(1.08);
-        box-shadow: 0px 10px 22px rgba(0,0,0,0.35);
-        background: linear-gradient(135deg, #FFD54F 0%, #FF8F00 100%);
-        color: #000000;
-    }
-    </style>
+<style>
+/* 사이드바 전체 숨김 */
+[data-testid="stSidebar"], 
+section[data-testid="stSidebar"],
+[data-testid="stSidebarNav"] { display: none !important; }
+
+/* 헤더(햄버거 포함) 숨김 */
+header[data-testid="stHeader"] { 
+  visibility: hidden; 
+  height: 0 !important; 
+}
+
+/* 툴바(우측 상단 메뉴) 숨김 */
+div[data-testid="stToolbar"] { display: none !important; }
+
+/* 본문 좌우 여백 살짝 줄여 영상 강조(선택) */
+.main .block-container { padding-top: 1rem; }
+</style>
 """, unsafe_allow_html=True)
 
-# 버튼을 화면 정가운데 배치 (세로 가운데는 Streamlit 기본 구조상 제한적)
+# ⬇️ 본문: 영상 + 중앙 큰 버튼만
+st.video("https://youtu.be/E8-IImZ7c1Q?si=EMOphL_YXLbFuw8H")
+
+# 버튼 스타일
+st.markdown("""
+<style>
+/* 버튼 텍스트/크기/패딩을 강제 적용 */
+div.stButton > button,
+button[kind="secondary"],
+button[kind="primary"] {
+    font-size: 35px !important;      /* 글씨 크기 */
+    font-weight: 700 !important;     /* 글씨 두께 */
+    line-height: 1.25 !important;    /* 줄간격(이모지 포함 안정화) */
+    padding: 20px 38px !important;   /* 버튼 크기 */
+    border-radius: 16px !important;
+    color: #000 !important;
+    background: linear-gradient(135deg, #FFE082 0%, #FFB300 100%) !important;
+    border: none !important;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25) !important;
+    transition: transform .25s ease, box-shadow .25s ease !important;
+}
+
+/* 호버 효과 */
+div.stButton > button:hover,
+button[kind="secondary"]:hover,
+button[kind="primary"]:hover {
+    transform: scale(1.06) !important;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.35) !important;
+    background: linear-gradient(135deg, #FFD54F 0%, #FF8F00 100%) !important;
+}
+
+/* 내부 래퍼가 텍스트 크기를 덮어쓰는 경우 대비 */
+div.stButton > button * {
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 col1, col2, col3 = st.columns([4,3,4])
 with col2:
-    if st.button("🏠메인 홈으로 바로가기"):
+    if st.button("🏠 홈으로 바로가기"):
         st.switch_page("pages/1_home.py")
 
 
-with st.sidebar:
-    
-    st.page_link("pages/1_home.py", label="HOME", icon="🏠")
-    st.page_link("app.py", label="소개하기",icon="🐶")
-    st.markdown("---")
-
-    st.markdown("## 📖 개념 익히기")
-    st.page_link("pages/2_gradient_descent_1_optimization.py", label="(1) 최적화란?")
-    st.page_link("pages/3_gradient_descent_2_learning_rate.py", label="(2) 학습률이란?")
-    st.page_link("pages/4_gradient_descent_3_iterations.py", label="(3) 반복횟수란?")
-
-    st.markdown("---")
-    st.markdown("## 💻 시뮬레이션")
-    st.page_link("pages/5_simulation_1_learning_rate_exp.py", label="(1) 학습률 실험")
-    st.page_link("pages/6_simulation_2_iterations_exp.py", label="(2) 반복횟수 실험")
-
-    st.markdown("---")
-    st.markdown("## 🔎 예제")
-    st.page_link("pages/7_example.py", label="Q. 나 혼자 산다! 다 혼자 산다?")
-
-    st.markdown("---")
-    st.markdown("## 📊 데이터분석")
-    st.page_link("pages/8_data_analysis_1_basic_info.py", label="(1) 기본 정보 입력")
-    st.page_link("pages/9_data_analysis_2_topic_selection.py", label="(2) 분석 주제 선택")
-    st.page_link("pages/10_data_analysis_3_data_input.py", label="(3) 데이터 입력")
-    st.page_link("pages/11_data_analysis_4_prediction.py", label="(4) 예측 실행")
-    st.page_link("pages/12_data_analysis_5_summary.py", label="(5) 요약 결과")
 import chatdog_mount
 chatdog_mount.mount()

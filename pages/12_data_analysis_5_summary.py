@@ -81,7 +81,6 @@ hide_default_sidebar = """
 st.markdown(hide_default_sidebar, unsafe_allow_html=True)
 with st.sidebar:
     st.page_link("pages/1_home.py", label="HOME", icon="🏠")
-    st.page_link("app.py", label="소개하기",icon="🐶")
     st.markdown("---")
 
     st.markdown("## 📖 개념 익히기")
@@ -108,6 +107,9 @@ with st.sidebar:
 
 banner = Image.open("images/(12)title_summary_result.png")  
 st.image(banner, use_container_width=True)
+
+import chatdog_mount
+chatdog_mount.mount()
 
 with st.container():
     info_data = {
@@ -280,5 +282,3 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-import chatdog_mount
-chatdog_mount.mount()
