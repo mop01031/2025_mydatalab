@@ -37,7 +37,7 @@ st.markdown("""
 left, right = st.columns([1, 5], vertical_alignment="center")  # 👈 핵심!
 
 with left:
-    if st.button("소개하기"):
+    if st.button("소개영상"):
         st.switch_page("app.py")
 
 with right:
