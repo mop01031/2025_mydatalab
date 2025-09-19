@@ -43,18 +43,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 심사용 상단 토글 바(눈에 띄게 + 버튼 높이 맞춤) ---
+# --- 심사용 상단 토글 바(좌: 예시 모드 보기 / 중: 안내 메시지 / 우: 예시 모드 종료) ---
 st.markdown("""
 <style>
 .topbar {
-  background: #fff7cc;            /* 눈에 띄는 연노랑 */
+  background: #fff7cc;
   border: 1px solid #f6c800;
   border-radius: 10px;
-  padding: 10px 14px;              /* 너무 두껍지 않게 */
+  padding: 10px 14px;
   margin-bottom: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,.06);
-  min-height: 44px;                /* 버튼과 동일 높이로 맞춤 */
-  display: flex;                   /* 안의 텍스트 수직 가운데 정렬 */
+  min-height: 44px;
+  display: flex;
   align-items: center;
 }
 .topbar .msg {
@@ -64,7 +64,6 @@ st.markdown("""
   line-height: 1.2;
   margin: 0;
 }
-/* 오른쪽 컬럼 안의 Streamlit 버튼만 높이/정렬 보정 */
 .topbar-btn .stButton > button {
   height: 44px;
   padding: 0 14px;
@@ -73,14 +72,29 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-tb_left, tb_right = st.columns([6, 2], vertical_alignment="center")
-with tb_left:
+col_left, col_mid, col_right = st.columns([2, 6, 2], vertical_alignment="center")
+
+# ① 왼쪽: 예시 모드 보기 (off일 때 활성, on일 때 비활성)
+with col_left:
+    st.markdown('<div class="topbar-btn">', unsafe_allow_html=True)
+    if not review_mode:
+        if st.button("🧪 예시 모드 보기", use_container_width=True):
+            _set_query_params(review="1")
+            st.session_state.review_mode = True
+            st.rerun()
+    else:
+        st.button("🧪 예시 모드 보기", use_container_width=True, disabled=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# ② 가운데: 안내 메시지 (on일 때 '입력 없이도 다음…', off일 때 전환 안내)
+with col_mid:
     msg = ("🧪 예시 모드입니다. 입력 없이도 ‘다음’으로 이동할 수 있어요."
            if review_mode else
            "🧪 예시 모드로 전환하면, 기본값과 빠른 진행이 활성화됩니다.")
     st.markdown(f'<div class="topbar"><div class="msg">{msg}</div></div>', unsafe_allow_html=True)
 
-with tb_right:
+# ③ 오른쪽: 예시 모드 종료 (on일 때 활성, off일 때 비활성)
+with col_right:
     st.markdown('<div class="topbar-btn">', unsafe_allow_html=True)
     if review_mode:
         if st.button("🚫 예시 모드 종료", use_container_width=True):
@@ -88,10 +102,7 @@ with tb_right:
             st.session_state.review_mode = False
             st.rerun()
     else:
-        if st.button("🧪 예시 모드로 보기", use_container_width=True):
-            _set_query_params(review="1")
-            st.session_state.review_mode = True
-            st.rerun()
+        st.button("🚫 예시 모드 종료", use_container_width=True, disabled=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
 # --- 배너 ---
