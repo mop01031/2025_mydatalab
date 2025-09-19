@@ -50,7 +50,7 @@ st.markdown("""
   border: 1px solid #f6c800;
   border-radius: 10px;
   padding: 12px 14px;
-  margin-bottom: 14px;
+  margin-bottom: 6px;
   box-shadow: 0 2px 8px rgba(0,0,0,.06);
 }
 .topbar-msg {
@@ -58,6 +58,10 @@ st.markdown("""
   color: #4a3d00;
   font-size: 15px;
   text-align: center;
+  margin: 0;   
+}
+.topbar-btn .stButton {
+  margin-top: 0 !important;      /* ⬅️ 버튼 위쪽 여백 제거 */
 }
 .topbar-btn .stButton > button {
   height: 40px;
