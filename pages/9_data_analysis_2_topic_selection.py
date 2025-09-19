@@ -106,21 +106,21 @@ st.markdown("""
 tb_left, tb_right = st.columns([8, 4], vertical_alignment="center")
 with tb_left:
     msg = (
-        "🧪 심사용 모드입니다. 자동으로 입력된 주제를 확인하고 ‘다음’으로 이동해주세요."
+        "🧪 예시 모드입니다. 자동으로 입력된 주제를 확인하고 ‘다음’으로 이동해주세요."
         if review_mode else
-        "🧪 심사용 모드로 전환하면, 시연용 기본값과 빠른 진행이 활성화됩니다."
+        "🧪 예시 모드로 전환하면, 기본값과 빠른 진행이 활성화됩니다."
     )
     st.markdown(f'<div class="topbar"><div class="msg">{msg}</div></div>', unsafe_allow_html=True)
 
 with tb_right:
     st.markdown('<div class="topbar-btn">', unsafe_allow_html=True)
     if review_mode:
-        if st.button("🚫 심사용 종료", use_container_width=True):
+        if st.button("🚫 예시 모드 종료", use_container_width=True):
             _set_query_params()
             st.session_state.review_mode = False
             st.rerun()
     else:
-        if st.button("🧪 심사용 모드로 보기", use_container_width=True):
+        if st.button("🧪 예시 모드로 보기", use_container_width=True):
             _set_query_params(review="1")
             st.session_state.review_mode = True
             st.rerun()

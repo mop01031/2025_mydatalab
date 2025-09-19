@@ -43,72 +43,67 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 심사용 상단 토글 바(왼: 보기 / 중: 메시지 / 오른: 종료, 전부 한 줄 표시) ---
+# --- 심사용 상단 토글 바(버튼 2개 위쪽, 안내 메시지 아래쪽) ---
 st.markdown("""
 <style>
-.topbar-wrap { margin-bottom: 14px; }
-.topbar {
+.topbar-box {
   background: #fff7cc;
   border: 1px solid #f6c800;
   border-radius: 10px;
   padding: 10px 14px;
+  margin-bottom: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,.06);
-  min-height: 44px;
-  display: flex;
-  align-items: center;
 }
-.topbar .msg {
+.topbar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.topbar-msg {
   font-weight: 700;
   color: #4a3d00;
   font-size: 15px;
-  line-height: 1.2;
-  margin: 0;
-  white-space: nowrap;           /* ⛔ 줄바꿈 금지 */
-  overflow: hidden;              /* 넘치면 숨김 */
-  text-overflow: ellipsis;       /* … 처리 */
-  word-break: keep-all;          /* 한국어 단어 단위 유지 */
+  line-height: 1.3;
 }
 .topbar-btn .stButton > button {
-  height: 44px;
+  height: 40px;
   padding: 0 16px;
   font-weight: 700;
-  border-radius: 10px;
-  white-space: nowrap;           /* ⛔ 줄바꿈 금지 */
-  word-break: keep-all;          /* 한국어 단어 단위 유지 */
-  min-width: 140px;              /* 버튼 너무 좁아지지 않게 */
+  border-radius: 8px;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 </style>
 """, unsafe_allow_html=True)
 
-col_left, col_mid, col_right = st.columns([2, 6, 2], vertical_alignment="center")
+with st.container():
+    st.markdown('<div class="topbar-box">', unsafe_allow_html=True)
 
-# ① 왼쪽: 예시 모드 보기 (항상 활성화)
-with col_left:
-    st.markdown('<div class="topbar-btn">', unsafe_allow_html=True)
-    if st.button("🧪 예시 모드 보기", use_container_width=True):
-        # TODO: 나중에 동작 정의 (지금은 활성 상태 유지 목적)
-        _set_query_params(review="1")
-        st.session_state.review_mode = True
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+    # ① 버튼 줄
+    col1, col2 = st.columns([1,1])
+    with col1:
+        st.markdown('<div class="topbar-btn">', unsafe_allow_html=True)
+        if st.button("🧪 예시 모드 보기", use_container_width=True):
+            _set_query_params(review="1")
+            st.session_state.review_mode = True
+            st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+    with col2:
+        st.markdown('<div class="topbar-btn">', unsafe_allow_html=True)
+        if st.button("🚫 예시 모드 종료", use_container_width=True):
+            _set_query_params()
+            st.session_state.review_mode = False
+            st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
 
-# ② 가운데: 안내 메시지(한 줄, 말줄임 처리)
-with col_mid:
+    # ② 메시지 줄
     msg = ("🧪 예시 모드입니다. 입력 없이도 ‘다음’으로 이동할 수 있어요."
            if review_mode else
            "🧪 예시 모드로 전환하면, 기본값과 빠른 진행이 활성화됩니다.")
-    st.markdown('<div class="topbar-wrap"><div class="topbar"><div class="msg" title="{0}">{0}</div></div></div>'.format(msg),
-                unsafe_allow_html=True)
+    st.markdown(f'<div class="topbar-msg">{msg}</div>', unsafe_allow_html=True)
 
-# ③ 오른쪽: 예시 모드 종료 (항상 활성화)
-with col_right:
-    st.markdown('<div class="topbar-btn">', unsafe_allow_html=True)
-    if st.button("🚫 예시 모드 종료", use_container_width=True):
-        # TODO: 나중에 동작 정의 (지금은 활성 상태 유지 목적)
-        _set_query_params()
-        st.session_state.review_mode = False
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 배너 ---
 banner = Image.open("images/(8)title_basic_info.png")
