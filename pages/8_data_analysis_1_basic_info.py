@@ -19,13 +19,8 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
-# --- 배너 이미지 ---
-banner = Image.open("images/(8)title_basic_info.png")
-st.image(banner, use_container_width=True)
-
 # --- 예시 모드 안내 & 버튼 줄 ---
-st.markdown('<div class="topbar-box">🧪 예시 모드를 사용하면 입력 없이 흐름을 체험할 수 있어요.</div>', unsafe_allow_html=True)
+#st.markdown('<div class="topbar-box">🧪 예시 모드를 사용하면 입력 없이 흐름을 체험할 수 있어요.</div>', unsafe_allow_html=True)
 c1, c2 = st.columns(2, gap="small")
 with c1:
     if st.button("🧪 예시 모드 보기", use_container_width=True):
@@ -33,6 +28,12 @@ with c1:
 with c2:
     if st.button("🚫 예시 모드 종료", use_container_width=True):
         st.switch_page("pages/8_data_analysis_1_basic_info.py")
+
+# --- 배너 이미지 ---
+banner = Image.open("images/(8)title_basic_info.png")
+st.image(banner, use_container_width=True)
+
+
 
 # --- 입력 폼 ---
 name = st.text_input("이름", value=st.session_state.get("name", ""), key="input_name")

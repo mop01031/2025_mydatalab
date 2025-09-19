@@ -9,57 +9,71 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- 기본 사이드바 숨기기 (기본 네이티브 네비게이션) ---
+# --- 기본 사이드바 숨기기 + 상단 스타일 ---
 st.markdown("""
     <style>
     [data-testid="stSidebarNav"] { display: none; }
+    .topbar-row { margin: 8px 0 2px 0; }
+    .topbar-box {
+      background: #fff7cc; border: 1px solid #f6c800; border-radius: 10px;
+      padding: 10px 12px; margin: 6px 0 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      font-weight: 700; color: #4a3d00; text-align: center;
+    }
+    .top-actions { display:flex; justify-content:flex-end; gap:8px; margin: 6px 0 6px 0; }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 배너 ---
+# --- 상단 액션: 예시모드 종료 버튼 (배너 위) ---
+col_left, col_right = st.columns([3, 1])
+with col_right:
+    if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_exit_demo_top"):
+        st.switch_page("pages/8_data_analysis_1_basic_info.py")
+
+# --- 안내 박스 ---
+st.markdown('<div class="topbar-box">🧪 예시 모드: 기본값이 채워져 있지만 자유롭게 수정할 수 있어요.</div>', unsafe_allow_html=True)
+
+# --- 배너 이미지 ---
 banner = Image.open("images/(8)title_basic_info.png")
 st.image(banner, use_container_width=True)
 
-# --- 예시 모드 안내 박스 ---
-st.markdown("""
-<div style="
-  background:#fff7cc; border:1px solid #f6c800; border-radius:10px;
-  padding:12px 14px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,.06);
-  font-weight:700; color:#4a3d00; text-align:center;">
-🧪 예시 모드입니다. 입력값이 미리 채워져 있으며, 바로 ‘다음’으로 이동할 수 있어요.
-</div>
-""", unsafe_allow_html=True)
-
-# --- 예시값 세팅 (세션에 주입) ---
+# --- 기본 예시값 ---
 example = {
     "name": "홍길동",
-    "student_id": "2025-20123",
-    "school": "이음고등학교",
+    "student_id": "30000",
+    "school": "OO고등학교",
     "date": _date.today(),
 }
 
-# 세션에 없으면 예시값으로 채움 (있어도 예시 모드에서는 예시값으로 덮어씀)
-st.session_state.name = example["name"]
-st.session_state.student_id = example["student_id"]
-st.session_state.school = example["school"]
-st.session_state.date = str(example["date"])
+# --- 입력 폼 (예시값을 기본값으로 채움, 수정 가능) ---
+name = st.text_input("이름", value=st.session_state.get("name", example["name"]), key="input_name_demo")
+student_id = st.text_input("학번", value=st.session_state.get("student_id", example["student_id"]), key="input_id_demo")
+school = st.text_input("학교", value=st.session_state.get("school", example["school"]), key="input_school_demo")
 
-# --- 입력 폼 (예시 모드: 읽기 전용) ---
-colA, colB = st.columns([1,1])
-with colA:
-    st.text_input("이름", value=st.session_state["name"], key="input_name_demo", disabled=True)
-    st.text_input("학교", value=st.session_state["school"], key="input_school_demo", disabled=True)
-with colB:
-    st.text_input("학번", value=st.session_state["student_id"], key="input_id_demo", disabled=True)
-    st.date_input("날짜 선택", value=_date.fromisoformat(st.session_state["date"]), key="input_date_demo", disabled=True)
+# 날짜 기본값은 date 객체로 맞춰주기 (세션에 문자열이 들어올 수도 있어 방어코드)
+_date_value = st.session_state.get("date", example["date"])
+if isinstance(_date_value, str):
+    try:
+        _date_value = _date.fromisoformat(_date_value)
+    except Exception:
+        _date_value = example["date"]
 
-st.success("✅ 예시 정보가 설정되었습니다. 바로 다음 단계로 이동할 수 있어요.")
+date = st.date_input("날짜 선택", value=_date_value, key="input_date_demo")
 
-# --- 다음 버튼: 실제 다음 단계로 이동 ---
-if st.button("➡️ 다음 (분석 주제 선택으로 이동)"):
-    st.switch_page("pages/9_data_analysis_2_topic_selection.py")
+# --- 세션 저장 (수정해도 반영되도록) ---
+st.session_state.name = name
+st.session_state.student_id = student_id
+st.session_state.school = school
+st.session_state.date = str(date)
 
-# --- 사이드바 (고정 네비게이션) ---
+st.success("✅ 예시 정보가 준비되었습니다. 수정하거나 그대로 ‘다음’으로 이동할 수 있어요.")
+
+# --- 다음 버튼 ---
+col1, col2, col3 = st.columns([3, 1, 1])
+with col3:
+    if st.button("➡️ 다음", key="btn_next_demo"):
+        st.switch_page("pages/9_data_analysis_2_topic_selection.py")
+
+# --- 사이드바 ---
 with st.sidebar:
     st.page_link("pages/1_home.py", label="HOME", icon="🏠")
     st.markdown("---")
@@ -79,12 +93,8 @@ with st.sidebar:
     st.page_link("pages/7_example.py", label="Q. 나 혼자 산다! 다 혼자 산다?")
 
     st.markdown("---")
-    st.markdown("## 📊 데이터분석")
-    st.page_link("pages/8_data_analysis_1_basic_info.py", label="(1) 기본 정보 입력")
-    st.page_link("pages/9_data_analysis_2_topic_selection.py", label="(2) 분석 주제 선택")
-    st.page_link("pages/10_data_analysis_3_data_input.py", label="(3) 데이터 입력")
-    st.page_link("pages/11_data_analysis_4_prediction.py", label="(4) 예측 실행")
-    st.page_link("pages/12_data_analysis_5_summary.py", label="(5) 요약 결과")
+    st.markdown("## 📊 데이터분석(예시 모드)")
+    st.page_link("pages/13_data_analysis_1_basic_info(2).py", label="(1) 기본 정보 입력")
 
 # --- 챗봇 마운트 ---
 import chatdog_mount
