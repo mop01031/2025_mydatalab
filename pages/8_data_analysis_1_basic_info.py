@@ -1,12 +1,19 @@
 import streamlit as st
 from PIL import Image
+from datetime import date as _date  # (선택) 날짜 파싱에 필요하면 유지
+
 
 st.set_page_config(
     page_title="데이터분석 (1) 기본 정보 입력",
     page_icon="📊",
     layout="centered"
 )
-
+# ✅ 예시 모드에서 돌아왔으면 세션값 초기화
+if st.session_state.pop("came_from_demo", False):
+    for k in ("name", "student_id", "school", "date",
+              "input_name_demo", "input_id_demo", "input_school_demo", "input_date_demo"):
+        st.session_state.pop(k, None)
+    st.rerun()
 # --- 기본 사이드바 숨기기 ---
 st.markdown("""
     <style>
@@ -27,7 +34,11 @@ with c1:
         st.switch_page("pages/13_data_analysis_1_basic_info(2).py")
 with c2:
     if st.button("🚫 예시 모드 종료", use_container_width=True):
-        st.switch_page("pages/8_data_analysis_1_basic_info.py")
+        # ✅ 일반 모드에서 수동 초기화 & 새로고침
+        for k in ("name", "student_id", "school", "date",
+                  "input_name_demo", "input_id_demo", "input_school_demo", "input_date_demo"):
+            st.session_state.pop(k, None)
+        st.rerun()
 
 # --- 배너 이미지 ---
 banner = Image.open("images/(8)title_basic_info.png")
