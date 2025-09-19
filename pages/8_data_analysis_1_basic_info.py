@@ -42,8 +42,7 @@ st.markdown("""
     [data-testid="stSidebarNav"] { display: none; }
     </style>
 """, unsafe_allow_html=True)
-
-# --- 심사용 상단 토글 바 (버튼 2개 + 메시지) ---
+# --- 심사용 상단 토글 바 (버튼 위, 노란 박스 아래) ---
 st.markdown("""
 <style>
 .topbar-box {
@@ -53,12 +52,6 @@ st.markdown("""
   padding: 12px 14px;
   margin-bottom: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,.06);
-}
-.topbar-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 8px;
 }
 .topbar-msg {
   font-weight: 700;
@@ -76,9 +69,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="topbar-box">', unsafe_allow_html=True)
-
-# 버튼 줄 (기능 없음, 보기용)
+# 버튼 줄
 col1, col2 = st.columns([1,1])
 with col1:
     st.markdown('<div class="topbar-btn">', unsafe_allow_html=True)
@@ -89,10 +80,11 @@ with col2:
     st.button("🚫 예시 모드 종료", use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-# 메시지 줄
-st.markdown('<div class="topbar-msg">🧪 예시 모드입니다. 입력 없이도 ‘다음’으로 이동할 수 있어요.</div>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
+# 노란 박스 (안내 문구)
+st.markdown(
+    '<div class="topbar-box"><div class="topbar-msg">🧪 예시 모드입니다. 입력 없이도 ‘다음’으로 이동할 수 있어요.</div></div>',
+    unsafe_allow_html=True
+)
 
 
 # --- 배너 ---
