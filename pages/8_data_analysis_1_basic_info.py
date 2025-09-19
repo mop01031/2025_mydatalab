@@ -7,18 +7,32 @@ st.set_page_config(
     layout="centered"
 )
 
-hide_default_sidebar = """
+# --- 기본 사이드바 숨기기 ---
+st.markdown("""
     <style>
-    [data-testid="stSidebarNav"] {
-        display: none;
+    [data-testid="stSidebarNav"] { display: none; }
+    .topbar-row { margin: 8px 0 2px 0; }
+    .topbar-box {
+      background: #fff7cc; border: 1px solid #f6c800; border-radius: 10px;
+      padding: 10px 12px; margin: 6px 0 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      font-weight: 700; color: #4a3d00; text-align: center;
     }
     </style>
-"""
-st.markdown(hide_default_sidebar, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # --- 배너 이미지 ---
-banner = Image.open("images/(8)title_basic_info.png")  
+banner = Image.open("images/(8)title_basic_info.png")
 st.image(banner, use_container_width=True)
+
+# --- 예시 모드 안내 & 버튼 줄 ---
+st.markdown('<div class="topbar-box">🧪 예시 모드를 사용하면 입력 없이 흐름을 체험할 수 있어요.</div>', unsafe_allow_html=True)
+c1, c2 = st.columns(2, gap="small")
+with c1:
+    if st.button("🧪 예시 모드 보기", use_container_width=True):
+        st.switch_page("pages/13_data_analysis_1_basic_info(2).py")
+with c2:
+    if st.button("🚫 예시 모드 종료", use_container_width=True):
+        st.switch_page("pages/8_data_analysis_1_basic_info.py")
 
 # --- 입력 폼 ---
 name = st.text_input("이름", value=st.session_state.get("name", ""), key="input_name")
