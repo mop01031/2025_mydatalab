@@ -68,6 +68,11 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+# 노란 박스 (안내 문구)
+st.markdown(
+    '<div class="topbar-box"><div class="topbar-msg">🧪 예시 모드입니다. 입력 없이도 ‘다음’으로 이동할 수 있어요.</div></div>',
+    unsafe_allow_html=True
+)
 
 # 버튼 줄
 col1, col2 = st.columns([1,1])
@@ -80,11 +85,6 @@ with col2:
     st.button("🚫 예시 모드 종료", use_container_width=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-# 노란 박스 (안내 문구)
-st.markdown(
-    '<div class="topbar-box"><div class="topbar-msg">🧪 예시 모드입니다. 입력 없이도 ‘다음’으로 이동할 수 있어요.</div></div>',
-    unsafe_allow_html=True
-)
 
 
 # --- 배너 ---
