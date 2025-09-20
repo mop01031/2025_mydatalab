@@ -20,7 +20,7 @@ st.markdown("""
 col_left, col_right = st.columns([3, 1])
 with col_right:
     if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_exit_demo_topic"):
-        st.switch_page("pages/13_data_analysis_1_basic_info(2).py")
+        st.switch_page("pages/8_data_analysis_1_basic_info.py")
 
 # --- 배너 ---
 banner = Image.open("images/(9)title_select_topic.png")
@@ -45,8 +45,8 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("## 📊 데이터분석(예시 모드)")
-    st.page_link("pages/13_data_analysis_1_basic_info(2).py", label="(1) 기본 정보 입력 - 예시")
-    st.page_link("pages/14_data_analysis_2_topic_selection(2).py", label="(2) 분석 주제 선택 - 예시")
+    st.page_link("pages/13_data_analysis_1_basic_info(2).py", label="(1) 기본 정보 입력")
+    st.page_link("pages/14_data_analysis_2_topic_selection(2).py", label="(2) 분석 주제 선택")
 
 # --- 선행 단계 확인 (원본과 동일 로직) ---
 if "name" not in st.session_state:
