@@ -183,38 +183,35 @@ def mount_chatdog(
   #send{{height:44px;border:0;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;font:700 15px system-ui;cursor:pointer}}
 
 /* 반응형 오버라이드 (교체본) --------------------------------------- */
-/* ✅ 태블릿: 641~1024px — ‘다음’ 버튼과 겹침 방지 위해 더 위로 띄우기 */
+/* ✅ 강제 오버라이드: 태블릿(641~1024px) */
 @media (min-width: 641px) and (max-width: 1024px){{
   #fab{{
-    width: clamp(110px, 20vw, 200px);   /* ← 필요시 20vw 조정 */
-    height: clamp(110px, 20vw, 200px);  /* ← 필요시 20vw 조정 */
-    right: 16px;
-    bottom: calc(110px + var(--safe-bottom)); /* ← 겹치면 90~110px로 ↑ */
-    z-index: 100002;
+    /* 겹침 해소: 더 위·조금 왼쪽·살짝 축소 */
+    width: clamp(100px, 18vw, 180px) !important; /* 필요시 16~20vw로 조정 */
+    height: clamp(100px, 18vw, 180px) !important;
+    right: 24px !important;                        /* 필요시 16~28px 조정 */
+    bottom: calc(150px + var(--safe-bottom)) !important; /* ← 130~180px에서 맞춰보세요 */
+    z-index: 100002 !important;
   }}
   #panel{{
-    width: min(94vw, 740px);
-    height: 74dvh;
-    top: 14dvh;  /* ← 더 내리고 싶으면 15~18dvh */
+    top: 16dvh !important;   /* 패널도 살짝 내려 충돌 최소화 (14~18dvh 범위에서 조정) */
   }}
-  .ftr{{ grid-template-columns: 1fr 104px; }}
 }}
 
-/* ✅ 휴대폰(일반): ≤640px — 너무 작게 보이는 문제 해결(크기 가변) */
+/* ✅ 강제 오버라이드: 휴대폰(≤640px) — 작게 보일 때 확대 */
 @media (max-width: 640px){{
   #fab{{
-    width: clamp(110px, 30vw, 200px);   /* ← 작으면 30~34vw로 ↑ */
-    height: clamp(110px, 30vw, 200px);
-    right: 12px;
-    bottom: calc(36px + var(--safe-bottom)); /* ← 겹치면 44px 등으로 ↑ */
-    z-index: 100002;
+    width: clamp(120px, 32vw, 220px) !important; /* 여전히 작으면 34~36vw ↑ */
+    height: clamp(120px, 32vw, 220px) !important;
+    right: 12px !important;
+    bottom: calc(48px + var(--safe-bottom)) !important;  /* 하단 UI 겹치면 52~60px ↑ */
+    z-index: 100002 !important;
   }}
   #panel{{
-    width: min(94vw, 560px);
-    height: 78dvh;   /* ← 크면 74~76dvh로 ↓ */
-    top: 6dvh;
+    height: 78dvh !important;  /* 화면에 따라 74~80dvh로 조정 */
+    top: 6dvh !important;
   }}
-  .ftr{{ grid-template-columns: 1
+}}
 </style>
 
     <button id="fab" aria-label="open chat"></button>
