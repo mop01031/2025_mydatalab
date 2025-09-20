@@ -22,22 +22,7 @@ hide_default_sidebar = """
     </style>
 """
 st.markdown(hide_default_sidebar, unsafe_allow_html=True)
-# --- 상단: 예시 모드 버튼 줄 (배너 위) ---
-c1, c2 = st.columns(2, gap="small")
-with c1:
-    if st.button("🧪 예시 모드 보기", use_container_width=True):
-        # ✅ 예시 페이지가 기본 문구로 뜨도록 강제 플래그 설정 + 데모 키 비우기
-        st.session_state["demo_force"] = True
-        for k in ("input_subject_demo", "demo_subject"):
-            st.session_state.pop(k, None)
-        st.switch_page("pages/14_data_analysis_2_topic_selection(2).py")
-with c2:
-    if st.button("🚫 예시 모드 종료", use_container_width=True):
-        # 현재 페이지 값 수동 초기화 후 새로고침
-        for k in ("subject", "subject_saved", "input_subject",
-                  "input_subject_demo", "demo_subject", "came_from_demo"):
-            st.session_state.pop(k, None)
-        st.rerun()
+
 # --- 배너 ---
 banner = Image.open("images/(9)title_select_topic.png")
 st.image(banner, use_container_width=True)

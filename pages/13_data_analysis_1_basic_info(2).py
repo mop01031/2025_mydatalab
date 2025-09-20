@@ -22,12 +22,16 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 상단: 예시모드 종료 (배너 위) ---
-col_left, col_right = st.columns([3, 1])
-with col_right:
-    if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_exit_demo_top"):
-        # 일반 페이지가 초기화하도록 플래그만 주고 이동(값 복사 X)
+# --- 상단: 예시 모드 버튼 줄 (배너 위, 8페이지와 동일 위치) ---
+# 보기 버튼은 '예시 모드 중'이므로 비활성화
+c1, c2 = st.columns(2, gap="small")
+with c1:
+    st.button("🧪 예시 모드 보기", use_container_width=True, disabled=True, key="btn_demo_view_disabled")
+with c2:
+    if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_demo_exit_on_13"):
+        # 8로 복귀 + 초기화 트리거
         st.session_state["came_from_demo"] = True
+        st.session_state.pop("demo_basic_active", None)
         st.switch_page("pages/8_data_analysis_1_basic_info.py")
 
 # --- 배너 ---
