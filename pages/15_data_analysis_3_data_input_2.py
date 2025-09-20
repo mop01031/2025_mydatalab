@@ -245,11 +245,14 @@ if "demo_x_values" in st.session_state and "demo_y_values" in st.session_state:
             st.switch_page("pages/14_data_analysis_2_topic_selection_2.py")
     with colC:
         if st.button("➡️ 다음", key="btn_next_demo"):
-            # 👉 11(일반)에서 쓸 수 있도록 '여기서만' 실제 키로 복사
+            # 👉 16(예시)에서 바로 사용하도록 실제 키로 복사
             st.session_state["x_label"] = st.session_state["demo_x_label"]
             st.session_state["y_label"] = st.session_state["demo_y_label"]
             st.session_state["table_data"] = st.session_state["demo_table_data"]
             st.session_state["x_values"] = st.session_state["demo_x_values"]
             st.session_state["y_values"] = st.session_state["demo_y_values"]
             st.session_state["analysis_text"] = st.session_state.get("demo_analysis_text", "")
-            st.switch_page("pages/11_data_analysis_4_prediction.py")
+            # (선택) 나중 일반 모드에서 깔끔히 지우려면 플래그도 남겨두기
+            st.session_state["demo_seeded_xy"] = True
+
+            st.switch_page("pages/16_data_analysis_4_prediction_2.py")
