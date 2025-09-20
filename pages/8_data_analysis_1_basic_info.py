@@ -8,12 +8,44 @@ st.set_page_config(
     page_icon="📊",
     layout="centered"
 )
-# ✅ 예시 모드에서 돌아왔으면 세션값 초기화
-if st.session_state.pop("came_from_demo", False):
-    for k in ("name", "student_id", "school", "date",
-              "input_name_demo", "input_id_demo", "input_school_demo", "input_date_demo"):
+# ✅ 날짜 안전 변환 헬퍼 (문자열/None도 받아서 date로 보정)
+def _coerce_date(v, default=None):
+    if default is None:
+        default = _date.today()
+    if v is None:
+        return default
+    if isinstance(v, _date):
+        return v
+    if isinstance(v, str):
+        try:
+            return _date.fromisoformat(v)
+        except Exception:
+            return default
+    return default
+
+# ✅ 예시 모드에서 돌아왔거나, 데모 위젯/데모 값이 남아있으면 모두 초기화
+reset_needed = st.session_state.pop("came_from_demo", False) or any(
+    k in st.session_state for k in (
+        # demo 위젯 키
+        "input_name_demo", "input_id_demo", "input_school_demo", "input_date_demo",
+        # demo 값 키
+        "demo_name", "demo_student_id", "demo_school", "demo_date",
+    )
+)
+if reset_needed:
+    for k in (
+        # 실제 값 키
+        "name", "student_id", "school", "date",
+        # 일반 위젯 키
+        "input_name", "input_id", "input_school", "input_date",
+        # 데모 위젯 키
+        "input_name_demo", "input_id_demo", "input_school_demo", "input_date_demo",
+        # 데모 값 키
+        "demo_name", "demo_student_id", "demo_school", "demo_date",
+    ):
         st.session_state.pop(k, None)
     st.rerun()
+
 # --- 기본 사이드바 숨기기 ---
 st.markdown("""
     <style>
