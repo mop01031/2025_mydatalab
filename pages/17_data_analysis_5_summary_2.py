@@ -217,12 +217,15 @@ with st.container():
             acc_color = "red" if (accuracy is not None and accuracy >= 90) else "gray"
             acc_weight = "bold" if (accuracy is not None and accuracy >= 90) else "normal"
 
+            theme_text = st.get_option("theme.textColor") or ("#111827" if st.get_option("theme.base")=="light" else "#f9fafb")
             st.markdown(f"""
-            <div style="margin-top: 80px; line-height: 1.8; font-size: 18px; color:{text_color};">
+            <div style="margin-top: 80px; line-height: 1.8; font-size: 18px; color:{theme_text};">
                 <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">🧮 예측 수식</div>
                 <div style="font-size: 18px; margin-bottom: 16px;">{model.get('label','(수식 정보 없음)')}</div>
             </div>
             """, unsafe_allow_html=True)
+
+
 
             st.markdown(f"""<span style="font-size: 18px;font-weight: bold;">🔍 <strong>예측 시도 횟수:</strong> {model.get('attempt_count','-')}회</span>""", unsafe_allow_html=True)
             st.markdown(f"""<span style="font-size: 18px;font-weight: bold;">📘 <strong>학습률:</strong> {model.get('lr','-')}</span>""", unsafe_allow_html=True)
