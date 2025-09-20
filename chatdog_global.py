@@ -182,23 +182,39 @@ def mount_chatdog(
   #input{{height:44px;border:1px solid #cbd5e1;border-radius:12px;padding:0 12px;font:16px system-ui}}
   #send{{height:44px;border:0;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;font:700 15px system-ui;cursor:pointer}}
 
-  /* 반응형 오버라이드 */
-  @media (max-width: 1024px){{
-    #fab{{ width:100px; height:100px; }}
-    #panel{{ width:min(94vw,740px); height:72dvh; top:7dvh; }}
+/* 반응형 오버라이드 (교체본) --------------------------------------- */
+/* ✅ 태블릿: 641~1024px — ‘다음’ 버튼과 겹침 방지 위해 더 위로 띄우기 */
+@media (min-width: 641px) and (max-width: 1024px){{
+  #fab{{
+    width: clamp(110px, 20vw, 200px);   /* ← 필요시 20vw 조정 */
+    height: clamp(110px, 20vw, 200px);  /* ← 필요시 20vw 조정 */
+    right: 16px;
+    bottom: calc(80px + var(--safe-bottom)); /* ← 겹치면 90~110px로 ↑ */
+    z-index: 100002;
   }}
+  #panel{{
+    width: min(94vw, 740px);
+    height: 74dvh;
+    top: 14dvh;  /* ← 더 내리고 싶으면 15~18dvh */
+  }}
+  .ftr{{ grid-template-columns: 1fr 104px; }}
+}}
 
-  @media (max-width: 640px){{
-    #fab{{ width:88px; height:88px; right:12px; }}
-    #panel{{ width:min(94vw,560px); height:74dvh; top:6dvh; }}
-    .ftr{{ grid-template-columns: 1fr 104px; }}
+/* ✅ 휴대폰(일반): ≤640px — 너무 작게 보이는 문제 해결(크기 가변) */
+@media (max-width: 640px){{
+  #fab{{
+    width: clamp(110px, 28vw, 200px);   /* ← 작으면 30~34vw로 ↑ */
+    height: clamp(110px, 28vw, 200px);
+    right: 12px;
+    bottom: calc(36px + var(--safe-bottom)); /* ← 겹치면 44px 등으로 ↑ */
+    z-index: 100002;
   }}
-
-  @media (max-width: 380px){{
-    #fab{{ width:78px; height:78px; right:10px; }}
-    #panel{{ width:96vw; height:76dvh; top:5dvh; }}
-    .ftr{{ grid-template-columns: 1fr 96px; }}
+  #panel{{
+    width: min(94vw, 560px);
+    height: 78dvh;   /* ← 크면 74~76dvh로 ↓ */
+    top: 6dvh;
   }}
+  .ftr{{ grid-template-columns: 1
 </style>
 
     <button id="fab" aria-label="open chat"></button>
