@@ -204,34 +204,51 @@ def mount_chatdog(
   }}
 }}
 
-/* ✅ 휴대폰(일반): ≤640px — safe-area 반영 + 잘림 방지 */
+/* ✅ 휴대폰(≤640px) — safe-area + 100svh 기반 */
 @media (max-width: 640px){{
   #fab{{
     width: clamp(120px, 32vw, 220px) !important;
     height: clamp(120px, 32vw, 220px) !important;
-    /* ▶ 오른쪽도 safe-area 고려 */
     right: max(12px, var(--safe-right)) !important;
-    bottom: calc(52px + var(--safe-bottom)) !important; /* 겹치면 56~64px */
-    z-index: 100002 !important;
+    bottom: calc(56px + var(--safe-bottom)) !important;
+    z-index: 100003 !important;
   }}
 
   #panel{{
+    position: fixed !important;
     box-sizing: border-box !important;
-    /* ▶ 패널 폭을 안전영역만큼 줄이고, 패널도 오른쪽 안전영역에 맞춰 붙임 */
+    left: var(--safe-left) !important;
     right: var(--safe-right) !important;
-    left: auto !important;
-    width: calc(100vw - var(--safe-left) - var(--safe-right)) !important;
-    height: 84dvh !important;         /* 필요시 86~88dvh */
-    top: max(4dvh, var(--safe-top)) !important;  /* 상단 노치 피하기 */
-    padding-right: max(12px, var(--safe-right)) !important;
-    padding-left:  max(12px, var(--safe-left)) !important;
+    width: auto !important;
+
+    /* ▶ 상단 헤더(X)가 항상 보이도록 안전영역 + 여유 */
+    top: calc(var(--safe-top) + 12px) !important;
+
+    /* ▶ 주소창 높이 변동 대응: svh 사용 */
+    height: calc(100svh - var(--safe-top) - var(--safe-bottom) - 24px) !important;
+
+    padding: 10px max(12px, var(--safe-right)) 10px max(12px, var(--safe-left)) !important;
+    z-index: 100003 !important;
+    overflow: hidden !important;   /* 내부 스크롤만 사용 */
   }}
 
-  /* ▶ 헤더/푸터도 안전영역만큼 안쪽 여백 추가 */
-  .hdr{{ 
-    min-height: 52px !important; 
+  /* 헤더는 항상 보이게 고정 */
+  .hdr{{
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100004 !important;
+    background:#eff6ff !important;
+    min-height: 52px !important;
     padding: 8px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)) !important; 
   }}
+
+  /* 본문 스크롤 */
+  #body{{ 
+    overflow: auto !important; 
+    overscroll-behavior: contain !important; 
+    padding: 10px max(12px, var(--safe-right)) 10px max(12px, var(--safe-left)) !important;
+  }}
+
   .ftr{{ 
     grid-template-columns: 1fr 92px !important; 
     padding: 8px max(10px, var(--safe-right)) calc(8px + var(--safe-bottom)) max(10px, var(--safe-left)) !important; 
@@ -239,13 +256,9 @@ def mount_chatdog(
   }}
   #input{{ height: 42px !important; }}
   #send{{ height: 42px !important; font-size: 14px !important; }}
-
-  /* ▶ 말풍선/본문도 우측 잘림 방지 */
-  #body{{ padding: 10px max(12px, var(--safe-right)) 10px max(12px, var(--safe-left)) !important; }}
-  .bubble{{ max-width: 100% !important; }}
 }}
 
-/* ✅ 초소형 휴대폰: ≤380px — 거의 전폭 + 여백 더 확보 */
+/* ✅ 초소형(≤380px) — 같은 로직, 여백만 +2px */
 @media (max-width: 380px){{
   #fab{{
     width: clamp(110px, 34vw, 190px) !important;
@@ -255,27 +268,24 @@ def mount_chatdog(
   }}
 
   #panel{{
-    box-sizing: border-box !important;
-    left: var(--safe-left) !important;
-    right: var(--safe-right) !important;
-    width: auto !important;
-    top: calc(var(--safe-top) + 6px) !important;
-    height: calc(100svh - var(--safe-top) - var(--safe-bottom) - 12px) !important;
+    top: calc(var(--safe-top) + 14px) !important;  /* mini에서 더 여유 */
+    height: calc(100svh - var(--safe-top) - var(--safe-bottom) - 28px) !important;
     padding: 8px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)) !important;
   }}
 
-  .hdr{{ 
-    min-height: 48px !important;
+  .hdr{{
+    min-height: 48px !important; 
     padding: 6px max(10px, var(--safe-right)) 6px max(10px, var(--safe-left)) !important; 
   }}
   .ftr{{ 
-    grid-template-columns: 1fr 88px !important;
-    padding: 6px max(8px, var(--safe-right)) calc(6px + var(--safe-bottom)) max(8px, var(--safe-left)) !important;
+    grid-template-columns: 1fr 88px !important; 
+    padding: 6px max(8px, var(--safe-right)) calc(6px + var(--safe-bottom)) max(8px, var(--safe-left)) !important; 
     gap: 8px !important;
   }}
   #input{{ height: 40px !important; font-size: 14px !important; }}
   #send{{ height: 40px !important; font-size: 13px !important; }}
 }}
+
 
 
 </style>
