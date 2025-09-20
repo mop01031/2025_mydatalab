@@ -31,9 +31,8 @@ matplotlib.rcParams["axes.unicode_minus"] = False
 
 st.set_page_config(page_title="데이터분석 (4) 예측 실행 - 예시 모드", page_icon="🧪", layout="centered")
 
-# 예시 모드 플래그
+# ✅ 예시 모드 플래그 (공용 키 오염 방지)
 st.session_state["demo_active"] = True
-st.session_state["demo_recent"] = True
 
 # 기본 사이드바 숨기기
 st.markdown("""
@@ -46,23 +45,13 @@ st.markdown("""
 col_left, col_right = st.columns([3, 1])
 with col_right:
     if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_exit_demo_pred"):
-        # 일반 모드 진입 시 초기화 트리거
+        # 데모 상태만 싹 정리
+        for k in list(st.session_state.keys()):
+            if str(k).startswith("demo_"):
+                st.session_state.pop(k, None)
+        # 일반 페이지에서 추가 정리를 원한다면 사용
         st.session_state["came_from_demo"] = True
-        st.session_state["demo_recent"] = True
-
-        # 🔴 데모에서 사용하던 공용 예측 키 즉시 제거
-        for k in ("lr_value", "epochs_value", "predict_requested",
-                  "attempt_count", "history", "selected_model_indices",
-                  "predict_summary"):
-            st.session_state.pop(k, None)
-
-        # (선택) 데모가 일반 키로 주입한 xy도 정리하고 싶다면
-        # for k in ("x_values", "y_values", "x_label", "y_label", "analysis_text"):
-        #     st.session_state.pop(k, None)
-
-        st.session_state.pop("demo_active", None)
         st.switch_page("pages/8_data_analysis_1_basic_info.py")
-
 
 # =========================
 # 배너 + 챗봇
@@ -95,44 +84,34 @@ with st.sidebar:
     st.page_link("pages/17_data_analysis_5_summary_2.py", label="(5) 요약 결과")
 
 # =========================
-# 데모 데이터 (없으면 자동 주입)
+# 데모 데이터 (없으면 자동 주입)  → 모두 demo_* 키 사용
 # =========================
 EX_X = list(range(2008, 2023))
 EX_Y = [12.5, 12.8, 13.0, 13.2, 13.5, 13.7, 14.0, 14.2, 14.3, 14.4, 14.5, 14.7, 15.0, 15.2, 15.3]
-EX_X_LABEL = st.session_state.get("x_label", "연도")
-EX_Y_LABEL = st.session_state.get("y_label", "병상수(1000명당)")
 
-if "x_values" not in st.session_state or "y_values" not in st.session_state:
-    st.session_state["x_values"] = EX_X
-    st.session_state["y_values"] = EX_Y
-    st.session_state["x_label"]  = EX_X_LABEL
-    st.session_state["y_label"]  = EX_Y_LABEL
-    # ✅ 일반 페이지가 오염을 감지하고 초기화하도록 표식 남기기
-    st.session_state["demo_seeded_xy"] = True
+if "demo_x_values" not in st.session_state or "demo_y_values" not in st.session_state:
+    st.session_state["demo_x_values"] = EX_X
+    st.session_state["demo_y_values"] = EX_Y
+    st.session_state["demo_x_label"]  = "연도"
+    st.session_state["demo_y_label"]  = "병상수(1000명당)"
 
-x_raw = st.session_state.x_values
-y_raw = st.session_state.y_values
-x_label = st.session_state.get("x_label", "x")
-y_label = st.session_state.get("y_label", "y")
+x_raw = st.session_state["demo_x_values"]
+y_raw = st.session_state["demo_y_values"]
+x_label = st.session_state.get("demo_x_label", "x")
+y_label = st.session_state.get("demo_y_label", "y")
 
 # =========================
-# 하이퍼파라미터 기본값(정확도 높게)
+# 하이퍼파라미터 기본값(정확도 높게)  → demo_* 키
 # =========================
-st.session_state.setdefault("lr_value", 0.001)     # 수렴 잘되는 범위
-st.session_state.setdefault("epochs_value", 3000)  # 충분한 반복
-st.session_state.setdefault("attempt_count", 0)
-
-# 첫 진입 시 자동 예측 실행
-if not st.session_state.get("predict_requested", False):
-    st.session_state.predict_requested = True
-    st.session_state.attempt_count = max(1, st.session_state.attempt_count + 1)
-st.session_state.setdefault("history", [])
-
-learning_rate = st.session_state.lr_value
-epoch = st.session_state.epochs_value
+st.session_state.setdefault("demo_lr_value", 0.001)      # 수렴 잘되는 범위
+st.session_state.setdefault("demo_epochs_value", 3000)    # 충분한 반복
+st.session_state.setdefault("demo_attempt_count", 0)
+st.session_state.setdefault("demo_predict_requested", True)  # 첫 진입 자동 실행
+st.session_state.setdefault("demo_history", [])
+st.session_state.setdefault("demo_selected_model_indices", [])
 
 # =========================
-# UI: 함수 형태/학습률/반복횟수
+# UI: 함수 형태/학습률/반복횟수  → demo_* 키
 # =========================
 st.markdown("""
 <style>
@@ -146,55 +125,55 @@ func_type = st.radio(
     "함수 종류 선택",
     ["1차 함수", "2차 함수"],
     horizontal=True,
-    index=0,                 # ✅ 기본 1차 함수
+    index=0,  # ✅ 기본 1차 함수
     label_visibility="collapsed"
 )
 
 st.markdown("### 🔧 학습률 조절")
 lr_col1, lr_col2, lr_col3, lr_col4 = st.columns([1, 5, 1, 4])
 with lr_col1:
-    if st.button("➖", key="lr_minus"):
-        st.session_state.lr_value = max(0.0001, st.session_state.lr_value - 0.0001)
+    if st.button("➖", key="demo_lr_minus"):
+        st.session_state.demo_lr_value = max(0.0001, st.session_state.demo_lr_value - 0.0001)
 with lr_col2:
-    st.session_state.lr_value = st.slider("학습률", 0.0001, 0.01, st.session_state.lr_value,
-                                          step=0.0002, format="%.4f", label_visibility="collapsed")
+    st.session_state.demo_lr_value = st.slider("학습률", 0.0001, 0.01, st.session_state.demo_lr_value,
+                                               step=0.0002, format="%.4f", label_visibility="collapsed", key="demo_lr_slider")
 with lr_col3:
-    if st.button("➕", key="lr_plus"):
-        st.session_state.lr_value = min(0.01, st.session_state.lr_value + 0.0001)
+    if st.button("➕", key="demo_lr_plus"):
+        st.session_state.demo_lr_value = min(0.01, st.session_state.demo_lr_value + 0.0001)
 with lr_col4:
-    st.markdown(f"<b>현재 학습률: {st.session_state.lr_value:.4f}</b>", unsafe_allow_html=True)
+    st.markdown(f"<b>현재 학습률: {st.session_state.demo_lr_value:.4f}</b>", unsafe_allow_html=True)
 
 st.markdown("### 🔁 반복 횟수 조절")
 ep_col1, ep_col2, ep_col3, ep_col4 = st.columns([1, 5, 1, 4])
 with ep_col1:
-    if st.button("➖", key="ep_minus"):
-        st.session_state.epochs_value = max(100, st.session_state.epochs_value - 100)
+    if st.button("➖", key="demo_ep_minus"):
+        st.session_state.demo_epochs_value = max(100, st.session_state.demo_epochs_value - 100)
 with ep_col2:
-    st.session_state.epochs_value = st.slider("반복 횟수", 100, 7000, st.session_state.epochs_value,
-                                              step=100, label_visibility="collapsed")
+    st.session_state.demo_epochs_value = st.slider("반복 횟수", 100, 7000, st.session_state.demo_epochs_value,
+                                                   step=100, label_visibility="collapsed", key="demo_ep_slider")
 with ep_col3:
-    if st.button("➕", key="ep_plus"):
-        st.session_state.epochs_value = min(7000, st.session_state.epochs_value + 100)
+    if st.button("➕", key="demo_ep_plus"):
+        st.session_state.demo_epochs_value = min(7000, st.session_state.demo_epochs_value + 100)
 with ep_col4:
-    st.markdown(f"<b>현재 반복 횟수: {st.session_state.epochs_value}회</b>", unsafe_allow_html=True)
+    st.markdown(f"<b>현재 반복 횟수: {st.session_state.demo_epochs_value}회</b>", unsafe_allow_html=True)
 
 # =========================
-# 예측 실행 버튼 (수동 재실행용)
+# 예측 실행 버튼 (수동 재실행용) → demo_* 키
 # =========================
-if st.button("📈 예측 실행"):
+if st.button("📈 예측 실행", key="demo_run"):
     x_arr = np.array(x_raw); y_arr = np.array(y_raw)
     if len(x_arr) < 2 or np.std(x_arr) == 0 or np.any(np.isnan(x_arr)) or np.any(np.isnan(y_arr)):
-        st.session_state.predict_requested = False
+        st.session_state.demo_predict_requested = False
         st.error("⚠️ 예측할 수 없습니다. 입력 데이터가 너무 적거나, 모든 X값이 같거나, 결측치가 포함되어 있습니다.")
         st.stop()
-    st.session_state.predict_requested = True
-    st.session_state.history = []
-    st.session_state.attempt_count += 1
+    st.session_state.demo_predict_requested = True
+    st.session_state.demo_history = []
+    st.session_state.demo_attempt_count += 1
 
 # =========================
-# 예측/그래프/요약
+# 예측/그래프/요약  → demo_* 키
 # =========================
-if st.session_state.predict_requested:
+if st.session_state.demo_predict_requested:
     st.divider()
     st.markdown("### 📊 예측 결과")
 
@@ -202,17 +181,20 @@ if st.session_state.predict_requested:
     y = np.array(y_raw, dtype=float)
     x_plot = np.linspace(x.min(), x.max(), 100)
 
+    lr = st.session_state.demo_lr_value
+    ep = st.session_state.demo_epochs_value
+
     if func_type == "1차 함수":
         x_mean = x.mean(); x_std = x.std()
         x_scaled = (x - x_mean) / x_std
         x_plot_scaled = (x_plot - x_mean) / x_std
 
         m, b = 0.0, 0.0
-        for _ in range(st.session_state.epochs_value):
+        for _ in range(ep):
             y_fit = m * x_scaled + b
             error = y_fit - y
-            m -= st.session_state.lr_value * (2 / len(x)) * (error @ x_scaled)
-            b -= st.session_state.lr_value * (2 / len(x)) * error.sum()
+            m -= lr * (2 / len(x)) * (error @ x_scaled)
+            b -= lr * (2 / len(x)) * error.sum()
         y_pred = m * x_plot_scaled + b
 
         m_real = m / x_std
@@ -224,12 +206,12 @@ if st.session_state.predict_requested:
         x_scaled = (x - x_mean) / x_std
         x_plot_scaled = (x_plot - x_mean) / x_std
         a = b = c = 0.0
-        for _ in range(st.session_state.epochs_value):
+        for _ in range(ep):
             y_fit = a * x_scaled**2 + b * x_scaled + c
             error = y_fit - y
-            a -= st.session_state.lr_value * (2 / len(x)) * (error @ (x_scaled**2))
-            b -= st.session_state.lr_value * (2 / len(x)) * (error @ x_scaled)
-            c -= st.session_state.lr_value * (2 / len(x)) * error.sum()
+            a -= lr * (2 / len(x)) * (error @ (x_scaled**2))
+            b -= lr * (2 / len(x)) * (error @ x_scaled)
+            c -= lr * (2 / len(x)) * error.sum()
         y_pred = a * x_plot_scaled**2 + b * x_plot_scaled + c
         a_real = a / (x_std**2)
         b_real = (-2 * a * x_mean / (x_std**2)) + (b / x_std)
@@ -248,7 +230,7 @@ if st.session_state.predict_requested:
     if (np.any(np.isnan(y_pred)) or np.any(np.isinf(y_pred)) or
         np.isnan(ss_total) or np.isnan(ss_res) or np.isnan(r2) or
         np.isinf(ss_total) or np.isinf(ss_res) or np.isinf(r2)):
-        st.session_state.predict_requested = False
+        st.session_state.demo_predict_requested = False
         st.error("❌ 예측 결과가 유효하지 않습니다.\n학습률이 너무 크거나 반복 횟수가 너무 많을 수 있습니다.\n적절한 값으로 조절해 주세요.")
         st.stop()
 
@@ -270,10 +252,10 @@ if st.session_state.predict_requested:
         st.pyplot(fig)
 
     with col2:
-        st.markdown(f"🔍 예측 시도 횟수: {st.session_state.attempt_count}회")
+        st.markdown(f"🔍 예측 시도 횟수: {st.session_state.demo_attempt_count}회")
         st.markdown(f"🖋️ **수식**: {equation}")
-        st.markdown(f"📘 **학습률**: {st.session_state.lr_value}")
-        st.markdown(f"🔁 **반복 횟수**: {st.session_state.epochs_value}")
+        st.markdown(f"📘 **학습률**: {st.session_state.demo_lr_value}")
+        st.markdown(f"🔁 **반복 횟수**: {st.session_state.demo_epochs_value}")
         st.markdown(
             f"<div style='text-align:center; font-size:32px; font-weight:{acc_weight}; color:{acc_color};'>🎯 모델 정확도: {accuracy:.2f}%</div>",
             unsafe_allow_html=True
@@ -281,7 +263,7 @@ if st.session_state.predict_requested:
 
         # 👉 데모: 기본 예측 연도를 2026으로 둠 (요약문과 일치)
         input_x = st.number_input("예측하고 싶은 값을 입력하세요. (예: 연도, 나이, 기온 등)",
-                                  value=2026, step=1)
+                                  value=2026, step=1, key="demo_next_x")
         try:
             if func_type == "1차 함수":
                 y_input_pred = m_real * input_x + b_real
@@ -300,15 +282,15 @@ if st.session_state.predict_requested:
 
             entry = {
                 "x_plot": x_plot, "y_pred": y_pred, "label": equation,
-                "lr": st.session_state.lr_value, "epoch": st.session_state.epochs_value,
+                "lr": st.session_state.demo_lr_value, "epoch": st.session_state.demo_epochs_value,
                 "predicted_value": y_input_pred, "input_value": input_x,
-                "accuracy": accuracy, "attempt_count": st.session_state.attempt_count
+                "accuracy": accuracy, "attempt_count": st.session_state.demo_attempt_count
             }
             if func_type == "2차 함수":
                 entry["x_mean"] = x_mean; entry["x_std"] = x_std
 
-            st.session_state.history.append(entry)
-            st.session_state.selected_model_indices = [len(st.session_state.history) - 1]
+            st.session_state.demo_history.append(entry)
+            st.session_state.demo_selected_model_indices = [len(st.session_state.demo_history) - 1]
         except Exception:
             st.warning("⚠️ 예측값 계산 중 문제가 발생했습니다. 입력값 또는 설정을 다시 확인해주세요.")
 
@@ -322,8 +304,8 @@ if st.session_state.predict_requested:
     )
     predict_text = st.text_area(
         "예측 결과와 수식을 바탕으로 어떤 의미 있는 결론을 도출할 수 있었나요?",
-        value=st.session_state.get("predict_summary", DEFAULT_SUMMARY),
-        key="predict_summary_input",
+        value=st.session_state.get("demo_predict_summary", DEFAULT_SUMMARY),
+        key="demo_predict_summary_input",
         height=150
     )
 
@@ -333,6 +315,5 @@ if st.session_state.predict_requested:
             st.switch_page("pages/15_data_analysis_3_data_input_2.py")
     with colC:
         if st.button("➡️ 다음", key="go_summary_demo"):
-            st.session_state["predict_summary"] = predict_text
+            st.session_state["demo_predict_summary"] = predict_text
             st.switch_page("pages/17_data_analysis_5_summary_2.py")
-

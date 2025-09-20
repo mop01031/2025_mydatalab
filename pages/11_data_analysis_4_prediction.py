@@ -37,58 +37,18 @@ hide_default_sidebar = """
     </style>
 """
 st.markdown(hide_default_sidebar, unsafe_allow_html=True)
-# --- 데모 잔여 상태 정리: 데모에서 한 번이라도 다녀오면 예측 관련 상태 초기화 ---
-if st.session_state.pop("demo_recent", False) or st.session_state.get("demo_active") or st.session_state.get("demo_seeded_xy"):
-    # 11페이지의 예측 UI 상태들 정리
+# 선택: 데모 플래그 보이면 예측 관련 일반 키만 초기화
+if st.session_state.pop("demo_active", False) or st.session_state.pop("demo_recent", False):
     for k in ("lr_value", "epochs_value", "predict_requested",
               "attempt_count", "history", "selected_model_indices",
-              "predict_summary", "predict_summary_input"):
+              "predict_summary"):
         st.session_state.pop(k, None)
-
-    # 데모에서 x/y를 주입했으면 그 흔적도 제거해서 일반 플로우로 돌아가게
-    if st.session_state.pop("demo_seeded_xy", False):
-        for k in ("x_values", "y_values", "x_label", "y_label", "analysis_text"):
+    # 데모 키도 정리
+    for k in list(st.session_state.keys()):
+        if str(k).startswith("demo_"):
             st.session_state.pop(k, None)
-
-    # 데모 플래그 제거
-    st.session_state.pop("demo_active", None)
     st.rerun()
 
-# ✅ 예시 모드에서 돌아왔거나(플래그) 데모 흔적이 남아있으면 일반 모드 상태 초기화
-reset_needed = (
-    st.session_state.pop("came_from_demo", False) or
-    st.session_state.pop("demo_recent", False) or   # ← 추가: 데모 최근 방문 플래그도 감지
-    any(k in st.session_state for k in (
-        "demo_active", "demo_subject",
-        "demo_x_label", "demo_y_label",
-        "demo_table_data", "demo_x_values", "demo_y_values",
-        "demo_analysis_text"
-    ))
-)
-
-if reset_needed:
-    # 일반 모드/예측 관련 키 전부 초기화
-    for k in (
-        # 데이터 입력/표 관련
-        "table_data", "x_values", "y_values",
-        "x_label", "y_label",
-        "analysis_text", "show_plot", "data_editor",
-        # 🔴 예측(11페이지) 관련까지 같이 초기화
-        "lr_value", "epochs_value", "predict_requested",
-        "attempt_count", "history", "selected_model_indices", "predict_summary"
-    ):
-        st.session_state.pop(k, None)
-
-    # 데모 관련 키 정리
-    for k in (
-        "demo_active", "demo_subject",
-        "demo_x_label", "demo_y_label",
-        "demo_table_data", "demo_x_values", "demo_y_values",
-        "demo_analysis_text", "demo_seeded_xy"
-    ):
-        st.session_state.pop(k, None)
-
-    st.rerun()
 
 # =========================
 # 유틸: 쿼리 파라미터

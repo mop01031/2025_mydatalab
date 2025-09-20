@@ -1,7 +1,7 @@
-# pages/17_data_analysis_5_summary.py
+# pages/17_data_analysis_5_summary_2.py
 import streamlit as st
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator, ScalarFormatter, FormatStrFormatter
+from matplotlib.ticker import MaxNLocator
 import platform
 import matplotlib.font_manager as fm
 import matplotlib
@@ -15,7 +15,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# ------------------ 폰트 설정 (12와 동일) ------------------
+# ------------------ 폰트 설정 ------------------
 font_path = os.path.join("fonts", "NotoSansKR-Regular.ttf")
 if os.path.exists(font_path):
     font_prop = fm.FontProperties(fname=font_path)
@@ -30,7 +30,7 @@ else:
     font_prop = None
 matplotlib.rcParams["axes.unicode_minus"] = False
 
-# ------------------ 기본 사이드바 숨기기 + 인쇄 최적화 CSS (12와 동일) ------------------
+# ------------------ 기본 사이드바 숨기기 + 인쇄 최적화 CSS ------------------
 st.markdown("""
     <style>
         html, body, [data-testid="stAppViewContainer"], .main, .block-container {
@@ -40,15 +40,10 @@ st.markdown("""
         }
         [data-testid="stVerticalBlock"] { overflow: visible !important; }
         .stButton button { margin-top: 12px; }
-
-        /* ✅ 인쇄(PDF) 최적화 */
         @media print {
             html, body {
-                height: auto !important;
-                overflow: visible !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                zoom: 85%;
+                height: auto !important; overflow: visible !important;
+                margin: 0 !important; padding: 0 !important; zoom: 85%;
             }
             .element-container { page-break-inside: avoid; break-inside: avoid; }
             .stButton, .stSidebar { display: none !important; }
@@ -57,23 +52,26 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-hide_default_sidebar = """
+st.markdown("""
     <style>
     [data-testid="stSidebarNav"] { display: none; }
     </style>
-"""
-st.markdown(hide_default_sidebar, unsafe_allow_html=True)
-# --- 상단: 예시 모드 종료 (배너 위, 오른쪽 정렬) ---
+""", unsafe_allow_html=True)
+
+# --- 상단: 예시 모드 종료 ---
 col_left, col_right = st.columns([3, 1])
 with col_right:
     if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_exit_demo_summary"):
-        # ✅ 8번 페이지에서 세션 초기화가 실행되도록 플래그 설정
+        # 일반 모드 초기화를 트리거
         st.session_state["came_from_demo"] = True
-        # (선택) 예시 모드 관련 키 정리
+        # 데모 관련 키 모두 정리
         for k in (
-            "demo_active", "demo_subject", "input_subject_demo",
-            "demo_x_label", "demo_y_label", "demo_table_data",
-            "demo_x_values", "demo_y_values", "demo_analysis_text"
+            "demo_active","demo_subject","input_subject_demo",
+            "demo_x_label","demo_y_label","demo_table_data",
+            "demo_x_values","demo_y_values","demo_analysis_text",
+            "demo_lr_value","demo_epochs_value","demo_predict_requested",
+            "demo_attempt_count","demo_history","demo_selected_model_indices",
+            "demo_predict_summary","demo_next_x"
         ):
             st.session_state.pop(k, None)
         st.switch_page("pages/8_data_analysis_1_basic_info.py")
@@ -90,21 +88,17 @@ chatdog_mount.mount()
 with st.sidebar:
     st.page_link("pages/1_home.py", label="HOME", icon="🏠")
     st.markdown("---")
-
     st.markdown("## 📖 개념 익히기")
     st.page_link("pages/2_gradient_descent_1_optimization.py", label="(1) 최적화란?")
     st.page_link("pages/3_gradient_descent_2_learning_rate.py", label="(2) 학습률이란?")
     st.page_link("pages/4_gradient_descent_3_iterations.py", label="(3) 반복횟수란?")
-
     st.markdown("---")
     st.markdown("## 💻 시뮬레이션")
     st.page_link("pages/5_simulation_1_learning_rate_exp.py", label="(1) 학습률 실험")
     st.page_link("pages/6_simulation_2_iterations_exp.py", label="(2) 반복횟수란?")
-
     st.markdown("---")
     st.markdown("## 🔎 예제")
     st.page_link("pages/7_example.py", label="Q. 나 혼자 산다! 다 혼자 산다?")
-
     st.markdown("---")
     st.markdown("## 📊 데이터분석(예시 모드)")
     st.page_link("pages/13_data_analysis_1_basic_info_2.py", label="(1) 기본 정보 입력")
@@ -135,8 +129,7 @@ with st.container():
 # ------------------ 선택 주제 ------------------
 with st.container():
     st.markdown("### 🔵 선택한 분석 주제")
-    # 데모에서 demo_subject를 썼을 수 있으므로 fallback 처리
-    subject = st.session_state.get('subject', st.session_state.get('demo_subject', '정보 없음'))
+    subject = st.session_state.get('demo_subject', '정보 없음')  # ✅ 데모 키 우선
     st.markdown(f"""
     <div style='background-color: #f3f4f6; color: #111827;
                 padding: 15px 20px; border-radius: 10px;
@@ -147,30 +140,30 @@ with st.container():
 
 st.divider()
 
-# ------------------ 산점도 & 분석 텍스트 ------------------
-if 'x_values' in st.session_state and 'y_values' in st.session_state:
+# ------------------ 산점도 & 분석 텍스트 (demo_*만 사용) ------------------
+if 'demo_x_values' in st.session_state and 'demo_y_values' in st.session_state:
     st.markdown("### 🟣 산점도 그래프 & 분석 내용")
     col1, col2 = st.columns([3, 2])
 
     with col1:
         fig, ax = plt.subplots(figsize=(5.5, 4))
-        ax.scatter(st.session_state.x_values, st.session_state.y_values, color='blue')
+        ax.scatter(st.session_state.demo_x_values, st.session_state.demo_y_values, color='blue')
         if font_prop:
-            ax.set_xlabel(st.session_state.get("x_label", "x"), fontproperties=font_prop)
-            ax.set_ylabel(st.session_state.get("y_label", "y"), fontproperties=font_prop)
+            ax.set_xlabel(st.session_state.get("demo_x_label", "x"), fontproperties=font_prop)
+            ax.set_ylabel(st.session_state.get("demo_y_label", "y"), fontproperties=font_prop)
         else:
-            ax.set_xlabel(st.session_state.get("x_label", "x"))
-            ax.set_ylabel(st.session_state.get("y_label", "y"))
+            ax.set_xlabel(st.session_state.get("demo_x_label", "x"))
+            ax.set_ylabel(st.session_state.get("demo_y_label", "y"))
         st.pyplot(fig)
 
     with col2:
-        if 'analysis_text' in st.session_state:
+        if 'demo_analysis_text' in st.session_state:
             st.markdown(f"""
             <div style='background-color: #f9fafb; padding: 18px 20px; border-radius: 10px;
                         font-size: 16px; line-height: 1.6; color: #111827;
                         border: 1px solid #e5e7eb;margin-top: 32px;'>
                 <div style='font-weight: 600; font-size: 18px; margin-bottom: 10px;'>✏️ 분석 내용</div>
-                {st.session_state.analysis_text}
+                {st.session_state.demo_analysis_text}
             </div>
             """, unsafe_allow_html=True)
         else:
@@ -180,16 +173,16 @@ else:
 
 st.divider()
 
-# ------------------ 최종 예측 요약(히스토리 기반) ------------------
+# ------------------ 최종 예측 요약(히스토리 기반, demo_*만 사용) ------------------
 with st.container():
     st.markdown("### 🟢 최종 예측 요약")
 
-    if 'history' in st.session_state and st.session_state.get('selected_model_indices'):
-        final_idx = st.session_state.selected_model_indices[-1]
-        model = st.session_state.history[final_idx]
+    if 'demo_history' in st.session_state and st.session_state.get('demo_selected_model_indices'):
+        final_idx = st.session_state.demo_selected_model_indices[-1]
+        model = st.session_state.demo_history[final_idx]
 
-        # 정확도 계산 보정(12와 동일 로직)
-        y_true = np.array(st.session_state.get('y_values', []))
+        # 정확도 계산 (12와 동일 컨셉)
+        y_true = np.array(st.session_state.get('demo_y_values', []))
         y_fit = np.array(model.get('y_pred', []))
         if len(y_true) > 0 and len(y_fit) >= len(y_true):
             y_pred = y_fit[-len(y_true):]
@@ -204,16 +197,16 @@ with st.container():
         with col1:
             st.markdown("#### 📈 예측 결과 그래프")
             fig, ax = plt.subplots(figsize=(6, 4))
-            xv = st.session_state.get("x_values", [])
-            yv = st.session_state.get("y_values", [])
+            xv = st.session_state.get("demo_x_values", [])
+            yv = st.session_state.get("demo_y_values", [])
             ax.scatter(xv, yv, label="입력 데이터", color="blue")
             ax.plot(model.get("x_plot", []), model.get("y_pred", []), label="예측 선", color="red")
             if font_prop:
-                ax.set_xlabel(st.session_state.get("x_label", "x"), fontproperties=font_prop)
-                ax.set_ylabel(st.session_state.get("y_label", "y"), fontproperties=font_prop)
+                ax.set_xlabel(st.session_state.get("demo_x_label", "x"), fontproperties=font_prop)
+                ax.set_ylabel(st.session_state.get("demo_y_label", "y"), fontproperties=font_prop)
             else:
-                ax.set_xlabel(st.session_state.get("x_label", "x"))
-                ax.set_ylabel(st.session_state.get("y_label", "y"))
+                ax.set_xlabel(st.session_state.get("demo_x_label", "x"))
+                ax.set_ylabel(st.session_state.get("demo_y_label", "y"))
             ax.legend()
             st.pyplot(fig)
 
@@ -226,12 +219,8 @@ with st.container():
 
             st.markdown(f"""
             <div style="margin-top: 80px; line-height: 1.8; font-size: 18px; color:{text_color};">
-                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">
-                    🧮 예측 수식
-                </div>
-                <div style="font-size: 18px; margin-bottom: 16px;">
-                    {model.get('label','(수식 정보 없음)')}
-                </div>
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">🧮 예측 수식</div>
+                <div style="font-size: 18px; margin-bottom: 16px;">{model.get('label','(수식 정보 없음)')}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -252,23 +241,23 @@ with st.container():
     else:
         st.info("최종 예측 정보가 없습니다. (16번 페이지에서 예측 실행을 완료하세요.)")
 
-    # 예측 결과 해석(텍스트)
+    # 예측 결과 해석(텍스트) → demo_* 사용
     theme = st.get_option("theme.base")
     if theme == "dark":
         summary_bg = "#374151"; summary_border = "#6b7280"; summary_text = "#f9fafb"
     else:
         summary_bg = "#fefce8"; summary_border = "#fde68a"; summary_text = "#111827"
 
-    if 'predict_summary' in st.session_state:
+    if 'demo_predict_summary' in st.session_state:
         st.markdown(f"""
         <div style='background-color: {summary_bg}; padding: 18px 20px; border-radius: 10px;
                     border: 1px solid {summary_border}; margin-top: 20px; color: {summary_text};'>
             <div style='font-weight: 600; font-size: 17px;'>✏️ 예측 결과 해석</div>
-            <div>{st.session_state.predict_summary}</div>
+            <div>{st.session_state.demo_predict_summary}</div>
         </div>
         """, unsafe_allow_html=True)
 
-# ------------------ PDF로 저장(12와 동일) ------------------
+# ------------------ PDF로 저장 ------------------
 st.markdown("""
     <style>
         @media print { .no-print { display: none !important; } }
