@@ -39,6 +39,35 @@ hide_default_sidebar = """
     </style>
 """
 st.markdown(hide_default_sidebar, unsafe_allow_html=True)
+# ✅ 예시 모드에서 돌아왔거나(플래그) 데모 흔적이 남아있으면 일반 모드 상태 초기화
+reset_needed = st.session_state.pop("came_from_demo", False) or any(
+    k in st.session_state for k in (
+        "demo_active", "demo_subject",
+        "demo_x_label", "demo_y_label",
+        "demo_table_data", "demo_x_values", "demo_y_values",
+        "demo_analysis_text"
+    )
+)
+if reset_needed:
+    # 일반 모드 키 초기화
+    for k in (
+        "table_data", "x_values", "y_values",
+        "x_label", "y_label",
+        "analysis_text", "show_plot",
+        "data_editor"  # data_editor 위젯 상태까지 리셋
+    ):
+        st.session_state.pop(k, None)
+
+    # 데모 관련 키도 정리
+    for k in (
+        "demo_active", "demo_subject",
+        "demo_x_label", "demo_y_label",
+        "demo_table_data", "demo_x_values", "demo_y_values",
+        "demo_analysis_text"
+    ):
+        st.session_state.pop(k, None)
+
+    st.rerun()
 
 banner = Image.open("images/(10)title_data_input.png")  
 st.image(banner, use_container_width=True)
