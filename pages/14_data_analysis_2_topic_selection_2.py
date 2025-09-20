@@ -53,6 +53,8 @@ with st.sidebar:
     st.page_link("pages/13_data_analysis_1_basic_info_2.py", label="(1) 기본 정보 입력")
     st.page_link("pages/14_data_analysis_2_topic_selection_2.py", label="(2) 분석 주제 선택")
     st.page_link("pages/15_data_analysis_3_data_input_2.py", label="(3) 데이터 입력")
+    st.page_link("pages/16_data_analysis_4_prediction_2.py", label="(4) 예측 실행")
+    st.page_link("pages/17_data_analysis_5_summary_2.py", label="(5) 요약 결과")
 # --- 선행 단계 확인 (예시 모드가 아니면 체크, 예시 모드면 우회) ---
 if not st.session_state.get("demo_active", False) and "name" not in st.session_state:
     st.warning("이전 단계에서 데이터를 먼저 입력해 주세요.")

@@ -78,6 +78,7 @@ with st.sidebar:
     st.page_link("pages/14_data_analysis_2_topic_selection_2.py", label="(2) 분석 주제 선택")
     st.page_link("pages/15_data_analysis_3_data_input_2.py", label="(3) 데이터 입력")
     st.page_link("pages/16_data_analysis_4_prediction_2.py", label="(4) 예측 실행")
+    st.page_link("pages/17_data_analysis_5_summary_2.py", label="(5) 요약 결과")
 
 # =========================
 # 데모 데이터 (없으면 자동 주입)
@@ -88,11 +89,12 @@ EX_X_LABEL = st.session_state.get("x_label", "연도")
 EX_Y_LABEL = st.session_state.get("y_label", "병상수(1000명당)")
 
 if "x_values" not in st.session_state or "y_values" not in st.session_state:
-    # 15(예시)에서 안 넘어온 경우를 대비한 안전장치
     st.session_state["x_values"] = EX_X
     st.session_state["y_values"] = EX_Y
     st.session_state["x_label"]  = EX_X_LABEL
     st.session_state["y_label"]  = EX_Y_LABEL
+    # ✅ 일반 페이지가 오염을 감지하고 초기화하도록 표식 남기기
+    st.session_state["demo_seeded_xy"] = True
 
 x_raw = st.session_state.x_values
 y_raw = st.session_state.y_values
