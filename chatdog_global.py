@@ -204,29 +204,6 @@ def mount_chatdog(
   }}
 }}
 
-/* ✅ 휴대폰(일반): ≤640px — FAB 크게, 패널 더 넓고 높게 */
-@media (max-width: 640px){{
-  #fab{{
-    width: clamp(120px, 32vw, 220px) !important;  /* ← 작으면 34~36vw */
-    height: clamp(120px, 32vw, 220px) !important;
-    right: 12px !important;
-    bottom: calc(52px + var(--safe-bottom)) !important; /* ← 하단 UI 겹치면 56~64px */
-    z-index: 100002 !important;
-  }}
-  #panel{{
-    width: min(98vw, 600px) !important;  /* ← 더 넓게 보이게(필요시 100vw) */
-    height: 84dvh !important;            /* ← 더 크면 86~88dvh */
-    top: 4dvh !important;                /* ← 상단 여백(작게 하려면 3dvh) */
-  }}
-  .hdr{{ min-height: 52px !important; padding: 8px 10px !important; }}
-  .ttl{{ font: 800 15px/1.2 system-ui !important; }}
-  .sub{{ font: 11px/1.2 system-ui !important; }}
-  #body{{ padding: 10px 12px !important; }}
-  .ftr{{ grid-template-columns: 1fr 92px !important; padding: 8px !important; }}
-  #input{{ height: 42px !important; }}
-  #send{{ height: 42px !important; font-size: 14px !important; }}
-}}
-
 /* ✅ 휴대폰(일반): ≤640px — safe-area 반영 + 잘림 방지 */
 @media (max-width: 640px){{
   #fab{{
@@ -271,33 +248,35 @@ def mount_chatdog(
 /* ✅ 초소형 휴대폰: ≤380px — 거의 전폭 + 여백 더 확보 */
 @media (max-width: 380px){{
   #fab{{
-    width: clamp(108px, 34vw, 190px) !important;
-    height: clamp(108px, 34vw, 190px) !important;
+    width: clamp(110px, 34vw, 190px) !important;
+    height: clamp(110px, 34vw, 190px) !important;
     right: max(10px, var(--safe-right)) !important;
-    bottom: calc(60px + var(--safe-bottom)) !important; /* 필요시 64~72px */
+    bottom: calc(62px + var(--safe-bottom)) !important;
   }}
+
   #panel{{
     box-sizing: border-box !important;
+    left: var(--safe-left) !important;
     right: var(--safe-right) !important;
-    left: auto !important;
-    width: calc(100vw - var(--safe-left) - var(--safe-right)) !important; /* 사실상 전폭 */
-    height: 86dvh !important;
-    top: max(3dvh, var(--safe-top)) !important;
-    padding-right: max(12px, var(--safe-right)) !important;
-    padding-left:  max(12px, var(--safe-left)) !important;
+    width: auto !important;
+    top: calc(var(--safe-top) + 6px) !important;
+    height: calc(100svh - var(--safe-top) - var(--safe-bottom) - 12px) !important;
+    padding: 8px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)) !important;
   }}
+
   .hdr{{ 
-    min-height: 48px !important; 
+    min-height: 48px !important;
     padding: 6px max(10px, var(--safe-right)) 6px max(10px, var(--safe-left)) !important; 
   }}
   .ftr{{ 
-    grid-template-columns: 1fr 88px !important; 
-    padding: 6px max(8px, var(--safe-right)) calc(6px + var(--safe-bottom)) max(8px, var(--safe-left)) !important; 
+    grid-template-columns: 1fr 88px !important;
+    padding: 6px max(8px, var(--safe-right)) calc(6px + var(--safe-bottom)) max(8px, var(--safe-left)) !important;
     gap: 8px !important;
   }}
   #input{{ height: 40px !important; font-size: 14px !important; }}
   #send{{ height: 40px !important; font-size: 13px !important; }}
 }}
+
 
 </style>
 
