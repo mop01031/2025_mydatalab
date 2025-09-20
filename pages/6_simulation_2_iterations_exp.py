@@ -103,7 +103,7 @@ st.image(banner, use_container_width=True)
 col1, col2 = st.columns([14,3])  
 with col2:
     if st.button("🏠 홈으로"):
-        st.switch_page("app.py")
+        st.switch_page("pages/1_home.py")  
 
 st.markdown("### ✅ 비교하고 싶은 반복횟수를 선택하세요")
 cols = st.columns(len(epoch_options))

@@ -40,10 +40,10 @@ st.markdown("""
 div.stButton > button,
 button[kind="secondary"],
 button[kind="primary"] {
-    font-size: 35px !important;      /* 글씨 크기 */
+    font-size: 22px !important;      /* 글씨 크기 */
     font-weight: 700 !important;     /* 글씨 두께 */
     line-height: 1.25 !important;    /* 줄간격(이모지 포함 안정화) */
-    padding: 20px 38px !important;   /* 버튼 크기 */
+    padding: 10px 20px !important;   /* 버튼 크기 */
     border-radius: 16px !important;
     color: #000 !important;
     background: linear-gradient(135deg, #FFE082 0%, #FFB300 100%) !important;
@@ -74,7 +74,3 @@ col1, col2, col3 = st.columns([4,3,4])
 with col2:
     if st.button("🏠 홈으로 바로가기"):
         st.switch_page("pages/1_home.py")
-
-
-import chatdog_mount
-chatdog_mount.mount()

@@ -105,7 +105,7 @@ y_label = st.session_state.get("demo_y_label", "y")
 # =========================
 st.session_state.setdefault("demo_lr_value", 0.001)      # 수렴 잘되는 범위
 st.session_state.setdefault("demo_epochs_value", 3000)    # 충분한 반복
-st.session_state.setdefault("demo_attempt_count", 0)
+st.session_state.setdefault("demo_attempt_count", 1)
 st.session_state.setdefault("demo_predict_requested", True)  # 첫 진입 자동 실행
 st.session_state.setdefault("demo_history", [])
 st.session_state.setdefault("demo_selected_model_indices", [])
