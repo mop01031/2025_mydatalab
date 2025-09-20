@@ -53,15 +53,20 @@ if "name" not in st.session_state:
     st.warning("이전 단계에서 데이터를 먼저 입력해 주세요.")
     st.stop()
 
-# --- 기본 주제 (미리 작성된 상태) ---
+# --- 기본 주제 고정값 ---
 DEFAULT_SUBJECT = " 우리나라 병상 수는 앞으로도 계속 늘어날까? "
+
+# ✅ 9번에서 넘어올 때 강제 초기화 플래그가 있으면, 무조건 기본 문구로 설정
+if st.session_state.pop("demo_force", False):
+    st.session_state["demo_subject"] = DEFAULT_SUBJECT
+    st.session_state.pop("input_subject_demo", None)  # 위젯 값도 초기화
 
 # --- 주제 입력(예시값 기본) ---
 subject = st.text_area(
     "📌 국가통계포털을 이용해 분석하고 싶은 데이터를 찾아보고, 주제를 작성하세요!",
-    value=st.session_state.get("demo_subject", st.session_state.get("subject", DEFAULT_SUBJECT)),
+    value=st.session_state.get("demo_subject", DEFAULT_SUBJECT),  # ← subject 참조 제거
     placeholder="예: 공부시간에 대한 성적 예측하기",
-    key="input_subject_demo"   # 데모 전용 위젯 키
+    key="input_subject_demo"
 )
 st.markdown("[🔎 국가통계포털 바로가기](https://kosis.kr/index/index.do)", unsafe_allow_html=True)
 
