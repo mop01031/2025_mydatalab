@@ -39,15 +39,20 @@ hide_default_sidebar = """
     </style>
 """
 st.markdown(hide_default_sidebar, unsafe_allow_html=True)
-# ✅ 예시 모드에서 돌아왔거나(플래그) 데모 흔적이 남아있으면 일반 모드 상태 초기화
-reset_needed = st.session_state.pop("came_from_demo", False) or any(
-    k in st.session_state for k in (
-        "demo_active", "demo_subject",
-        "demo_x_label", "demo_y_label",
-        "demo_table_data", "demo_x_values", "demo_y_values",
-        "demo_analysis_text"
-    )
+# ✅ 예시 모드에서 돌아왔거나(플래그) 예시 데이터가 실제 키로 복사된 흔적이 있으면 초기화
+demo_markers = (
+    "demo_active", "demo_recent", "demo_seeded_xy",
+    "demo_subject", "demo_x_label", "demo_y_label",
+    "demo_table_data", "demo_x_values", "demo_y_values", "demo_analysis_text"
 )
+
+reset_needed = (
+    st.session_state.pop("came_from_demo", False) or
+    st.session_state.pop("demo_seeded_xy", False) or
+    st.session_state.pop("demo_recent", False) or
+    any(k in st.session_state for k in demo_markers)
+)
+
 if reset_needed:
     # 일반 모드 키 초기화
     for k in (
@@ -59,15 +64,11 @@ if reset_needed:
         st.session_state.pop(k, None)
 
     # 데모 관련 키도 정리
-    for k in (
-        "demo_active", "demo_subject",
-        "demo_x_label", "demo_y_label",
-        "demo_table_data", "demo_x_values", "demo_y_values",
-        "demo_analysis_text"
-    ):
+    for k in demo_markers:
         st.session_state.pop(k, None)
 
     st.rerun()
+
 
 banner = Image.open("images/(10)title_data_input.png")  
 st.image(banner, use_container_width=True)
