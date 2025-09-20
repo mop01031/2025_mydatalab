@@ -41,6 +41,14 @@ st.markdown("""
     [data-testid="stSidebarNav"] { display: none; }
     </style>
 """, unsafe_allow_html=True)
+# --- 상단: 예시 모드 종료(배너 위) ---
+col_left, col_right = st.columns([3, 1])
+with col_right:
+    if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_exit_demo_topic"):
+        # 예시 모드 종료시 1단계(예시)로 이동
+        st.session_state["came_from_demo"] = True
+        st.session_state.pop("demo_active", None)
+        st.switch_page("pages/8_data_analysis_1_basic_info.py")
 
 # 배너
 banner = Image.open("images/(10)title_data_input.png")

@@ -32,7 +32,7 @@ with col_right:
         # 예시 모드 종료시 1단계(예시)로 이동
         st.session_state["came_from_demo"] = True
         st.session_state.pop("demo_active", None)
-        st.switch_page("pages/13_data_analysis_1_basic_info(2).py")
+        st.switch_page("pages/8_data_analysis_1_basic_info.py")
 
 # --- 배너 ---
 banner = Image.open("images/(9)title_select_topic.png")
