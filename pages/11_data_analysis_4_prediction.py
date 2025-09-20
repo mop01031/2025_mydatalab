@@ -37,37 +37,38 @@ hide_default_sidebar = """
     </style>
 """
 st.markdown(hide_default_sidebar, unsafe_allow_html=True)
-# --- 예시 모드 잔여 상태 정리 (강화판) ---
-demo_markers = (
-    "demo_active", "demo_recent", "demo_seeded_xy",
-    "demo_subject", "demo_x_label", "demo_y_label",
-    "demo_table_data", "demo_x_values", "demo_y_values", "demo_analysis_text"
-)
-
+# ✅ 예시 모드에서 돌아왔거나(플래그) 데모 흔적이 남아있으면 일반 모드 상태 초기화
 reset_needed = (
     st.session_state.pop("came_from_demo", False) or
-    st.session_state.pop("demo_seeded_xy", False) or
-    st.session_state.pop("demo_recent", False) or
-    st.session_state.get("demo_active", False) or
-    any(k in st.session_state for k in demo_markers)
+    st.session_state.pop("demo_recent", False) or   # ← 추가: 데모 최근 방문 플래그도 감지
+    any(k in st.session_state for k in (
+        "demo_active", "demo_subject",
+        "demo_x_label", "demo_y_label",
+        "demo_table_data", "demo_x_values", "demo_y_values",
+        "demo_analysis_text"
+    ))
 )
 
 if reset_needed:
-    # 예측/학습 관련 상태
+    # 일반 모드/예측 관련 키 전부 초기화
     for k in (
+        # 데이터 입력/표 관련
+        "table_data", "x_values", "y_values",
+        "x_label", "y_label",
+        "analysis_text", "show_plot", "data_editor",
+        # 🔴 예측(11페이지) 관련까지 같이 초기화
         "lr_value", "epochs_value", "predict_requested",
-        "attempt_count", "history", "selected_model_indices",
-        "predict_summary"
+        "attempt_count", "history", "selected_model_indices", "predict_summary"
     ):
         st.session_state.pop(k, None)
 
-    # 예시에서 실제 키로 주입됐을 수 있는 분석 키
-    for k in ("x_values", "y_values", "x_label", "y_label", "table_data",
-              "analysis_text", "show_plot", "data_editor"):
-        st.session_state.pop(k, None)
-
-    # 데모 표식 및 흔적 제거
-    for k in demo_markers:
+    # 데모 관련 키 정리
+    for k in (
+        "demo_active", "demo_subject",
+        "demo_x_label", "demo_y_label",
+        "demo_table_data", "demo_x_values", "demo_y_values",
+        "demo_analysis_text", "demo_seeded_xy"
+    ):
         st.session_state.pop(k, None)
 
     st.rerun()

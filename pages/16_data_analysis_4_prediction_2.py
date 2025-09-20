@@ -46,9 +46,23 @@ st.markdown("""
 col_left, col_right = st.columns([3, 1])
 with col_right:
     if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_exit_demo_pred"):
+        # 일반 모드 진입 시 초기화 트리거
         st.session_state["came_from_demo"] = True
+        st.session_state["demo_recent"] = True
+
+        # 🔴 데모에서 사용하던 공용 예측 키 즉시 제거
+        for k in ("lr_value", "epochs_value", "predict_requested",
+                  "attempt_count", "history", "selected_model_indices",
+                  "predict_summary"):
+            st.session_state.pop(k, None)
+
+        # (선택) 데모가 일반 키로 주입한 xy도 정리하고 싶다면
+        # for k in ("x_values", "y_values", "x_label", "y_label", "analysis_text"):
+        #     st.session_state.pop(k, None)
+
         st.session_state.pop("demo_active", None)
         st.switch_page("pages/8_data_analysis_1_basic_info.py")
+
 
 # =========================
 # 배너 + 챗봇
