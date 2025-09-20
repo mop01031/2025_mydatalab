@@ -99,7 +99,7 @@ with col3:
         st.session_state.school = school_demo
         st.session_state.date = str(date_demo)
         st.session_state.demo_active = True  # (선택) 이후 단계에서 '예시 진행 중' 판단용
-        st.switch_page("pages/9_data_analysis_2_topic_selection.py")
+        st.switch_page("pages/14_data_analysis_2_topic_selection(2).py")
 
 # --- 사이드바 (예시 모드 섹션만) ---
 with st.sidebar:
