@@ -37,6 +37,23 @@ hide_default_sidebar = """
     </style>
 """
 st.markdown(hide_default_sidebar, unsafe_allow_html=True)
+# --- 데모 잔여 상태 정리: 데모에서 한 번이라도 다녀오면 예측 관련 상태 초기화 ---
+if st.session_state.pop("demo_recent", False) or st.session_state.get("demo_active") or st.session_state.get("demo_seeded_xy"):
+    # 11페이지의 예측 UI 상태들 정리
+    for k in ("lr_value", "epochs_value", "predict_requested",
+              "attempt_count", "history", "selected_model_indices",
+              "predict_summary", "predict_summary_input"):
+        st.session_state.pop(k, None)
+
+    # 데모에서 x/y를 주입했으면 그 흔적도 제거해서 일반 플로우로 돌아가게
+    if st.session_state.pop("demo_seeded_xy", False):
+        for k in ("x_values", "y_values", "x_label", "y_label", "analysis_text"):
+            st.session_state.pop(k, None)
+
+    # 데모 플래그 제거
+    st.session_state.pop("demo_active", None)
+    st.rerun()
+
 # ✅ 예시 모드에서 돌아왔거나(플래그) 데모 흔적이 남아있으면 일반 모드 상태 초기화
 reset_needed = (
     st.session_state.pop("came_from_demo", False) or
