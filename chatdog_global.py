@@ -183,34 +183,64 @@ def mount_chatdog(
   #send{{height:44px;border:0;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;font:700 15px system-ui;cursor:pointer}}
 
 /* 반응형 오버라이드 (교체본) --------------------------------------- */
-/* ✅ 강제 오버라이드: 태블릿(641~1024px) */
+/* ✅ 태블릿: 641~1024px — ‘다음’ 버튼 겹침 방지 + 패널 살짝 내림 */
 @media (min-width: 641px) and (max-width: 1024px){{
   #fab{{
-    /* 겹침 해소: 더 위·조금 왼쪽·살짝 축소 */
-    width: clamp(100px, 18vw, 180px) !important; /* 필요시 16~20vw로 조정 */
+    width: clamp(100px, 18vw, 180px) !important;
     height: clamp(100px, 18vw, 180px) !important;
-    right: 24px !important;                        /* 필요시 16~28px 조정 */
-    bottom: calc(150px + var(--safe-bottom)) !important; /* ← 130~180px에서 맞춰보세요 */
+    right: 24px !important;
+    bottom: calc(150px + var(--safe-bottom)) !important; /* ← 겹치면 170~180px */
     z-index: 100002 !important;
   }}
   #panel{{
-    top: 16dvh !important;   /* 패널도 살짝 내려 충돌 최소화 (14~18dvh 범위에서 조정) */
+    width: min(94vw, 740px) !important;
+    height: 74dvh !important;
+    top: 16dvh !important; /* ← 더 내리고 싶으면 17~18dvh */
   }}
 }}
 
-/* ✅ 강제 오버라이드: 휴대폰(≤640px) — 작게 보일 때 확대 */
+/* ✅ 휴대폰(일반): ≤640px — FAB 크게, 패널 더 넓고 높게 */
 @media (max-width: 640px){{
   #fab{{
-    width: clamp(120px, 32vw, 220px) !important; /* 여전히 작으면 34~36vw ↑ */
+    width: clamp(120px, 32vw, 220px) !important;  /* ← 작으면 34~36vw */
     height: clamp(120px, 32vw, 220px) !important;
     right: 12px !important;
-    bottom: calc(48px + var(--safe-bottom)) !important;  /* 하단 UI 겹치면 52~60px ↑ */
+    bottom: calc(52px + var(--safe-bottom)) !important; /* ← 하단 UI 겹치면 56~64px */
     z-index: 100002 !important;
   }}
   #panel{{
-    height: 78dvh !important;  /* 화면에 따라 74~80dvh로 조정 */
-    top: 6dvh !important;
+    width: min(98vw, 600px) !important;  /* ← 더 넓게 보이게(필요시 100vw) */
+    height: 84dvh !important;            /* ← 더 크면 86~88dvh */
+    top: 4dvh !important;                /* ← 상단 여백(작게 하려면 3dvh) */
   }}
+  .hdr{{ min-height: 52px !important; padding: 8px 10px !important; }}
+  .ttl{{ font: 800 15px/1.2 system-ui !important; }}
+  .sub{{ font: 11px/1.2 system-ui !important; }}
+  #body{{ padding: 10px 12px !important; }}
+  .ftr{{ grid-template-columns: 1fr 92px !important; padding: 8px !important; }}
+  #input{{ height: 42px !important; }}
+  #send{{ height: 42px !important; font-size: 14px !important; }}
+}}
+
+/* ✅ 초소형 휴대폰: ≤380px — 거의 전폭, 입력영역 컴팩트 */
+@media (max-width: 380px){{
+  #fab{{
+    width: clamp(108px, 34vw, 190px) !important;  /* ← 과확대 방지 상한 190 */
+    height: clamp(108px, 34vw, 190px) !important;
+    right: 10px !important;
+    bottom: calc(60px + var(--safe-bottom)) !important; /* ← 필요시 64~72px */
+  }}
+  #panel{{
+    width: 100vw !important;
+    height: 86dvh !important;
+    top: 3dvh !important;
+  }}
+  .hdr{{ min-height: 48px !important; padding: 6px 8px !important; }}
+  .ttl{{ font: 800 14px/1.2 system-ui !important; }}
+  .sub{{ font: 10px/1.2 system-ui !important; }}
+  .ftr{{ grid-template-columns: 1fr 88px !important; padding: 6px !important; gap: 8px !important; }}
+  #input{{ height: 40px !important; font-size: 14px !important; }}
+  #send{{ height: 40px !important; font-size: 13px !important; }}
 }}
 </style>
 
