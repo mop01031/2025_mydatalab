@@ -30,13 +30,11 @@ with col_right:
         st.session_state["came_from_demo"] = True
         st.switch_page("pages/8_data_analysis_1_basic_info.py")
 
-# --- 안내 박스 ---
-st.markdown('<div class="topbar-box">🧪 예시 모드: 기본값이 채워져 있지만 자유롭게 수정할 수 있어요.</div>', unsafe_allow_html=True)
-
 # --- 배너 ---
 banner = Image.open("images/(8)title_basic_info.png")
 st.image(banner, use_container_width=True)
-
+# --- 안내 박스 ---
+st.markdown('<div class="topbar-box">🧪 예시 모드: 기본값이 채워져 있지만 자유롭게 수정할 수 있어요.</div>', unsafe_allow_html=True)
 # --- 기본 예시값 ---
 example = {
     "name": "홍길동",
@@ -125,6 +123,8 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("## 📊 데이터분석(예시 모드)")
     st.page_link("pages/13_data_analysis_1_basic_info(2).py", label="(1) 기본 정보 입력")
+    st.page_link("pages/14_data_analysis_2_topic_selection(2).py", label="(2) 분석 주제 선택")
+
 
 # --- 챗봇 마운트 ---
 import chatdog_mount
