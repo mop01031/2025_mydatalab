@@ -128,6 +128,7 @@ with st.sidebar:
     st.markdown("## 📊 데이터분석(예시 모드)")
     st.page_link("pages/13_data_analysis_1_basic_info(2).py", label="(1) 기본 정보 입력")
     st.page_link("pages/14_data_analysis_2_topic_selection(2).py", label="(2) 분석 주제 선택")
+    st.page_link("pages/15_data_analysis_3_data_input(2).py", label="(3) 데이터 입력")
 
 
 # --- 챗봇 마운트 ---
