@@ -6,9 +6,11 @@ st.set_page_config(
     page_icon="📊",
     layout="centered"
 )
-# ✅ 데모에서 돌아왔거나 데모 키가 남아있으면 초기화
-reset_needed = st.session_state.pop("came_from_demo", False) or any(
-    k in st.session_state for k in ("input_subject_demo", "demo_subject")
+# ✅ 데모에서 돌아왔거나 데모 키/플래그가 남아있으면 초기화
+reset_needed = (
+    st.session_state.pop("came_from_demo", False)
+    or st.session_state.pop("demo_recent", False)   # ← 추가!
+    or any(k in st.session_state for k in ("input_subject_demo", "demo_subject"))
 )
 if reset_needed:
     for k in ("subject", "subject_saved", "input_subject",

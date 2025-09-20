@@ -18,12 +18,6 @@ st.markdown("""
 # --- 예시 모드 고정 주제 ---
 DEFAULT_SUBJECT = " 우리나라 병상 수는 앞으로도 계속 늘어날까? "
 
-# ✅ 9번에서 '예시 모드 보기'를 누르고 왔으면 예시 모드 활성화 + 기본 주제로 강제 설정
-if st.session_state.pop("demo_force", False):
-    st.session_state["demo_active"] = True
-    st.session_state["demo_subject"] = DEFAULT_SUBJECT
-    st.session_state.pop("input_subject_demo", None)  # 위젯 값 초기화
-
 # --- 상단: 예시 모드 종료(배너 위) ---
 col_left, col_right = st.columns([3, 1])
 with col_right:
@@ -90,8 +84,8 @@ with col_left:
 with col_right:
     if st.button("✅ 주제 저장", use_container_width=True, key="btn_save_demo"):
         if subject.strip():
-            st.session_state.subject = subject            # 실제 키에도 저장(다음 단계 사용)
-            st.session_state.demo_subject = subject       # 데모 기본값 업데이트
+            # ⛔ 실제 키에 저장하지 않음
+            st.session_state.demo_subject = subject     # ✅ 데모 값만 업데이트
             st.session_state.subject_saved = True
         else:
             st.warning("⚠️ 주제를 입력해주세요.")
