@@ -39,6 +39,19 @@ hide_default_sidebar = """
     </style>
 """
 st.markdown(hide_default_sidebar, unsafe_allow_html=True)
+
+# --- 예시 모드 잔여 상태 정리(세이프가드) ---
+if st.session_state.pop("came_from_demo", False) or st.session_state.pop("demo_recent", False):
+    for k in ("lr_value", "epochs_value", "predict_requested",
+              "attempt_count", "history", "selected_model_indices",
+              "predict_summary"):
+        st.session_state.pop(k, None)
+    # 데모에서 주입한 x/y도 제거하고 싶다면(선택)
+    if st.session_state.pop("demo_seeded_xy", False):
+        for k in ("x_values", "y_values", "x_label", "y_label", "analysis_text"):
+            st.session_state.pop(k, None)
+    st.rerun()
+
 # ✅ 예시 모드에서 돌아왔거나(플래그) 예시 데이터가 실제 키로 복사된 흔적이 있으면 초기화
 demo_markers = (
     "demo_active", "demo_recent", "demo_seeded_xy",
