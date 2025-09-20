@@ -111,7 +111,7 @@ with st.sidebar:
     st.page_link("pages/14_data_analysis_2_topic_selection_2.py", label="(2) 분석 주제 선택")
     st.page_link("pages/15_data_analysis_3_data_input_2.py", label="(3) 데이터 입력")
     st.page_link("pages/16_data_analysis_4_prediction_2.py", label="(4) 예측 실행")
-    st.page_link("pages/17_data_analysis_5_summary.py", label="(5) 요약 결과")
+    st.page_link("pages/17_data_analysis_5_summary_2.py", label="(5) 요약 결과")
 
 # ------------------ 상단 요약(이름/학번/학교/날짜) ------------------
 with st.container():
