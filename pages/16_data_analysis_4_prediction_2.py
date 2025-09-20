@@ -318,5 +318,5 @@ if st.session_state.predict_requested:
     with colC:
         if st.button("➡️ 다음", key="go_summary_demo"):
             st.session_state["predict_summary"] = predict_text
-            st.switch_page("pages/12_data_analysis_5_summary.py")
+            st.switch_page("pages/17_data_analysis_5_summary.py")
 
