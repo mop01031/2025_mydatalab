@@ -1,4 +1,3 @@
-# pages/13_data_analysis_1_basic_info(2).py
 import streamlit as st
 from PIL import Image
 from datetime import date as _date

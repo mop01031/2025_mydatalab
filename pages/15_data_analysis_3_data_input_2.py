@@ -1,4 +1,3 @@
-# pages/15_data_analysis_3_data_input(2).py
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt

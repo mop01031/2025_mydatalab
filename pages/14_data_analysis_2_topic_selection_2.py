@@ -1,4 +1,3 @@
-# pages/14_data_analysis_2_topic_selection(2).py
 import streamlit as st
 from PIL import Image
 
