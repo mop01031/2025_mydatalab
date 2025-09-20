@@ -118,10 +118,15 @@ def mount_chatdog(
   const root = host.attachShadow({{mode:"open"}});
   root.innerHTML = `
 <style>
-  :host {{ 
-    all: initial; 
-    --safe-bottom: env(safe-area-inset-bottom, 0px); 
-  }}
+  :host {{
+  all: initial;
+  /* ✅ iOS 안전영역 전부 선언 */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}}
+
 
   #fab {{
   position: fixed;
@@ -222,26 +227,78 @@ def mount_chatdog(
   #send{{ height: 42px !important; font-size: 14px !important; }}
 }}
 
-/* ✅ 초소형 휴대폰: ≤380px — 거의 전폭, 입력영역 컴팩트 */
+/* ✅ 휴대폰(일반): ≤640px — safe-area 반영 + 잘림 방지 */
+@media (max-width: 640px){{
+  #fab{{
+    width: clamp(120px, 32vw, 220px) !important;
+    height: clamp(120px, 32vw, 220px) !important;
+    /* ▶ 오른쪽도 safe-area 고려 */
+    right: max(12px, var(--safe-right)) !important;
+    bottom: calc(52px + var(--safe-bottom)) !important; /* 겹치면 56~64px */
+    z-index: 100002 !important;
+  }}
+
+  #panel{{
+    box-sizing: border-box !important;
+    /* ▶ 패널 폭을 안전영역만큼 줄이고, 패널도 오른쪽 안전영역에 맞춰 붙임 */
+    right: var(--safe-right) !important;
+    left: auto !important;
+    width: calc(100vw - var(--safe-left) - var(--safe-right)) !important;
+    height: 84dvh !important;         /* 필요시 86~88dvh */
+    top: max(4dvh, var(--safe-top)) !important;  /* 상단 노치 피하기 */
+    padding-right: max(12px, var(--safe-right)) !important;
+    padding-left:  max(12px, var(--safe-left)) !important;
+  }}
+
+  /* ▶ 헤더/푸터도 안전영역만큼 안쪽 여백 추가 */
+  .hdr{{ 
+    min-height: 52px !important; 
+    padding: 8px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)) !important; 
+  }}
+  .ftr{{ 
+    grid-template-columns: 1fr 92px !important; 
+    padding: 8px max(10px, var(--safe-right)) calc(8px + var(--safe-bottom)) max(10px, var(--safe-left)) !important; 
+    gap: 10px !important;
+  }}
+  #input{{ height: 42px !important; }}
+  #send{{ height: 42px !important; font-size: 14px !important; }}
+
+  /* ▶ 말풍선/본문도 우측 잘림 방지 */
+  #body{{ padding: 10px max(12px, var(--safe-right)) 10px max(12px, var(--safe-left)) !important; }}
+  .bubble{{ max-width: 100% !important; }}
+}}
+
+/* ✅ 초소형 휴대폰: ≤380px — 거의 전폭 + 여백 더 확보 */
 @media (max-width: 380px){{
   #fab{{
-    width: clamp(108px, 34vw, 190px) !important;  /* ← 과확대 방지 상한 190 */
+    width: clamp(108px, 34vw, 190px) !important;
     height: clamp(108px, 34vw, 190px) !important;
-    right: 10px !important;
-    bottom: calc(60px + var(--safe-bottom)) !important; /* ← 필요시 64~72px */
+    right: max(10px, var(--safe-right)) !important;
+    bottom: calc(60px + var(--safe-bottom)) !important; /* 필요시 64~72px */
   }}
   #panel{{
-    width: 100vw !important;
+    box-sizing: border-box !important;
+    right: var(--safe-right) !important;
+    left: auto !important;
+    width: calc(100vw - var(--safe-left) - var(--safe-right)) !important; /* 사실상 전폭 */
     height: 86dvh !important;
-    top: 3dvh !important;
+    top: max(3dvh, var(--safe-top)) !important;
+    padding-right: max(12px, var(--safe-right)) !important;
+    padding-left:  max(12px, var(--safe-left)) !important;
   }}
-  .hdr{{ min-height: 48px !important; padding: 6px 8px !important; }}
-  .ttl{{ font: 800 14px/1.2 system-ui !important; }}
-  .sub{{ font: 10px/1.2 system-ui !important; }}
-  .ftr{{ grid-template-columns: 1fr 88px !important; padding: 6px !important; gap: 8px !important; }}
+  .hdr{{ 
+    min-height: 48px !important; 
+    padding: 6px max(10px, var(--safe-right)) 6px max(10px, var(--safe-left)) !important; 
+  }}
+  .ftr{{ 
+    grid-template-columns: 1fr 88px !important; 
+    padding: 6px max(8px, var(--safe-right)) calc(6px + var(--safe-bottom)) max(8px, var(--safe-left)) !important; 
+    gap: 8px !important;
+  }}
   #input{{ height: 40px !important; font-size: 14px !important; }}
   #send{{ height: 40px !important; font-size: 13px !important; }}
 }}
+
 </style>
 
     <button id="fab" aria-label="open chat"></button>
