@@ -189,7 +189,7 @@ def mount_chatdog(
     width: clamp(110px, 20vw, 200px);   /* ← 필요시 20vw 조정 */
     height: clamp(110px, 20vw, 200px);  /* ← 필요시 20vw 조정 */
     right: 16px;
-    bottom: calc(80px + var(--safe-bottom)); /* ← 겹치면 90~110px로 ↑ */
+    bottom: calc(110px + var(--safe-bottom)); /* ← 겹치면 90~110px로 ↑ */
     z-index: 100002;
   }}
   #panel{{
@@ -203,8 +203,8 @@ def mount_chatdog(
 /* ✅ 휴대폰(일반): ≤640px — 너무 작게 보이는 문제 해결(크기 가변) */
 @media (max-width: 640px){{
   #fab{{
-    width: clamp(110px, 28vw, 200px);   /* ← 작으면 30~34vw로 ↑ */
-    height: clamp(110px, 28vw, 200px);
+    width: clamp(110px, 30vw, 200px);   /* ← 작으면 30~34vw로 ↑ */
+    height: clamp(110px, 30vw, 200px);
     right: 12px;
     bottom: calc(36px + var(--safe-bottom)); /* ← 겹치면 44px 등으로 ↑ */
     z-index: 100002;
