@@ -204,7 +204,7 @@ def mount_chatdog(
   }}
 }}
 
-/* ✅ 휴대폰(≤640px) — safe-area + 100svh 기반 */
+/* ✅ 휴대폰(≤640px) — bottom 고정 + svh 기반 */
 @media (max-width: 640px){{
   #fab{{
     width: clamp(120px, 32vw, 220px) !important;
@@ -217,48 +217,51 @@ def mount_chatdog(
   #panel{{
     position: fixed !important;
     box-sizing: border-box !important;
+
+    /* ▶ 좌우를 안전영역에 맞춰 “끼우기” */
     left: var(--safe-left) !important;
     right: var(--safe-right) !important;
     width: auto !important;
 
-    /* ▶ 상단 헤더(X)가 항상 보이도록 안전영역 + 여유 */
-    top: calc(var(--safe-top) + 12px) !important;
+    /* ▶ 상단 고정(❌) 대신 하단 기준(✅)으로 끌어올림 */
+    top: auto !important;
+    bottom: calc(var(--safe-bottom) + 8px) !important;
 
-    /* ▶ 주소창 높이 변동 대응: svh 사용 */
-    height: calc(100svh - var(--safe-top) - var(--safe-bottom) - 24px) !important;
+    /* ▶ 화면 높이 변동에도 안정: svh + 안전영역만큼만 제한 */
+    height: min(88svh, calc(100svh - var(--safe-top) - var(--safe-bottom) - 24px)) !important;
 
     padding: 10px max(12px, var(--safe-right)) 10px max(12px, var(--safe-left)) !important;
     z-index: 100003 !important;
-    overflow: hidden !important;   /* 내부 스크롤만 사용 */
+    overflow: hidden !important;  /* 내부 스크롤만 사용 */
   }}
 
-  /* 헤더는 항상 보이게 고정 */
+  /* 헤더는 항상 보이게 */
   .hdr{{
     position: sticky !important;
     top: 0 !important;
     z-index: 100004 !important;
     background:#eff6ff !important;
     min-height: 52px !important;
-    padding: 8px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)) !important; 
+    padding: 8px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)) !important;
   }}
 
-  /* 본문 스크롤 */
-  #body{{ 
-    overflow: auto !important; 
-    overscroll-behavior: contain !important; 
+  /* 본문 스크롤 안정화 */
+  #body{{
+    overflow: auto !important;
+    overscroll-behavior: contain !important;
     padding: 10px max(12px, var(--safe-right)) 10px max(12px, var(--safe-left)) !important;
   }}
 
-  .ftr{{ 
-    grid-template-columns: 1fr 92px !important; 
-    padding: 8px max(10px, var(--safe-right)) calc(8px + var(--safe-bottom)) max(10px, var(--safe-left)) !important; 
+  .ftr{{
+    grid-template-columns: 1fr 92px !important;
+    padding: 8px max(10px, var(--safe-right)) calc(8px + var(--safe-bottom)) max(10px, var(--safe-left)) !important;
     gap: 10px !important;
   }}
   #input{{ height: 42px !important; }}
   #send{{ height: 42px !important; font-size: 14px !important; }}
 }}
 
-/* ✅ 초소형(≤380px) — 같은 로직, 여백만 +2px */
+/* ✅ 초소형(≤380px) — 같은 로직, 살짝 더 여백 */
 @media (max-width: 380px){{
   #fab{{
     width: clamp(110px, 34vw, 190px) !important;
@@ -268,23 +271,24 @@ def mount_chatdog(
   }}
 
   #panel{{
-    top: calc(var(--safe-top) + 14px) !important;  /* mini에서 더 여유 */
-    height: calc(100svh - var(--safe-top) - var(--safe-bottom) - 28px) !important;
+    bottom: calc(var(--safe-bottom) + 10px) !important; /* mini에서 여유 +2px */
+    height: min(90svh, calc(100svh - var(--safe-top) - var(--safe-bottom) - 28px)) !important;
     padding: 8px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)) !important;
   }}
 
   .hdr{{
-    min-height: 48px !important; 
-    padding: 6px max(10px, var(--safe-right)) 6px max(10px, var(--safe-left)) !important; 
+    min-height: 48px !important;
+    padding: 6px max(10px, var(--safe-right)) 6px max(10px, var(--safe-left)) !important;
   }}
-  .ftr{{ 
-    grid-template-columns: 1fr 88px !important; 
-    padding: 6px max(8px, var(--safe-right)) calc(6px + var(--safe-bottom)) max(8px, var(--safe-left)) !important; 
+  .ftr{{
+    grid-template-columns: 1fr 88px !important;
+    padding: 6px max(8px, var(--safe-right)) calc(6px + var(--safe-bottom)) max(8px, var(--safe-left)) !important;
     gap: 8px !important;
   }}
   #input{{ height: 40px !important; font-size: 14px !important; }}
   #send{{ height: 40px !important; font-size: 13px !important; }}
 }}
+
 
 
 
