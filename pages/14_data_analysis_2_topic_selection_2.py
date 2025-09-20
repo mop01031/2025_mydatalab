@@ -57,9 +57,9 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("## 📊 데이터분석(예시 모드)")
-    st.page_link("pages/13_data_analysis_1_basic_info(2).py", label="(1) 기본 정보 입력")
-    st.page_link("pages/14_data_analysis_2_topic_selection(2).py", label="(2) 분석 주제 선택")
-    st.page_link("pages/15_data_analysis_3_data_input(2).py", label="(3) 데이터 입력")
+    st.page_link("pages/13_data_analysis_1_basic_info_2.py", label="(1) 기본 정보 입력")
+    st.page_link("pages/14_data_analysis_2_topic_selection_2.py", label="(2) 분석 주제 선택")
+    st.page_link("pages/15_data_analysis_3_data_input_2.py", label="(3) 데이터 입력")
 # --- 선행 단계 확인 (예시 모드가 아니면 체크, 예시 모드면 우회) ---
 if not st.session_state.get("demo_active", False) and "name" not in st.session_state:
     st.warning("이전 단계에서 데이터를 먼저 입력해 주세요.")
@@ -105,12 +105,12 @@ if subject.strip():
     col1, col2, col3 = st.columns([3, 15, 3])
     with col1:
         if st.button("⬅️ 이전", key="btn_prev_demo"):
-            st.switch_page("pages/13_data_analysis_1_basic_info(2).py")
+            st.switch_page("pages/13_data_analysis_1_basic_info_2.py")
     with col3:
         if st.button("➡️ 다음", key="btn_next_demo"):
             st.session_state.subject = subject
             st.session_state.subject_saved = True
-            st.switch_page("pages/15_data_analysis_3_data_input(2).py")
+            st.switch_page("pages/15_data_analysis_3_data_input_2.py")
 
 # --- 챗봇 마운트 ---
 import chatdog_mount

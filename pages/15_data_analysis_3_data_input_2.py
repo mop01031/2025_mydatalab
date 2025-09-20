@@ -77,9 +77,9 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("## 📊 데이터분석(예시 모드)")
-    st.page_link("pages/13_data_analysis_1_basic_info(2).py", label="(1) 기본 정보 입력")
-    st.page_link("pages/14_data_analysis_2_topic_selection(2).py", label="(2) 분석 주제 선택")
-    st.page_link("pages/15_data_analysis_3_data_input(2).py", label="(3) 데이터 입력")
+    st.page_link("pages/13_data_analysis_1_basic_info_2.py", label="(1) 기본 정보 입력")
+    st.page_link("pages/14_data_analysis_2_topic_selection_2.py", label="(2) 분석 주제 선택")
+    st.page_link("pages/15_data_analysis_3_data_input_2.py", label="(3) 데이터 입력")
 
 # -------------------- 사용 안내 --------------------
 with st.expander("📘 사용 순서 안내 (클릭해서 열기)"):
@@ -258,7 +258,7 @@ if "x_values" in st.session_state and "y_values" in st.session_state:
     colA, colB, colC = st.columns([3, 15, 3])
     with colA:
         if st.button("⬅️ 이전"):
-            st.switch_page("pages/14_data_analysis_2_topic_selection(2).py")
+            st.switch_page("pages/14_data_analysis_2_topic_selection_2.py")
     with colC:
         if st.button("➡️ 다음"):
             st.switch_page("pages/11_data_analysis_4_prediction.py")

@@ -103,7 +103,7 @@ with col3:
         st.session_state.school = school_demo
         st.session_state.date = str(date_demo)
         st.session_state.demo_active = True  # (선택) 이후 단계에서 '예시 진행 중' 판단용
-        st.switch_page("pages/14_data_analysis_2_topic_selection(2).py")
+        st.switch_page("pages/14_data_analysis_2_topic_selection_2.py")
 
 # --- 사이드바 (예시 모드 섹션만) ---
 with st.sidebar:
@@ -126,9 +126,9 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("## 📊 데이터분석(예시 모드)")
-    st.page_link("pages/13_data_analysis_1_basic_info(2).py", label="(1) 기본 정보 입력")
-    st.page_link("pages/14_data_analysis_2_topic_selection(2).py", label="(2) 분석 주제 선택")
-    st.page_link("pages/15_data_analysis_3_data_input(2).py", label="(3) 데이터 입력")
+    st.page_link("pages/13_data_analysis_1_basic_info_2.py", label="(1) 기본 정보 입력")
+    st.page_link("pages/14_data_analysis_2_topic_selection_2.py", label="(2) 분석 주제 선택")
+    st.page_link("pages/15_data_analysis_3_data_input_2.py", label="(3) 데이터 입력")
 
 
 # --- 챗봇 마운트 ---

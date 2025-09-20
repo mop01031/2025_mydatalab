@@ -63,7 +63,7 @@ c1, c2 = st.columns(2, gap="small")
 with c1:
     if st.button("🧪 예시 모드 보기", use_container_width=True, key="btn_demo_view"):
         st.session_state["demo_basic_active"] = True   # ← 예시 모드 진입 플래그
-        st.switch_page("pages/13_data_analysis_1_basic_info(2).py")
+        st.switch_page("pages/13_data_analysis_1_basic_info_2.py")
 with c2:
     if st.button("🚫 예시 모드 종료", use_container_width=True, key="btn_demo_exit"):
         # 필요시 입력 값/위젯 키 초기화
