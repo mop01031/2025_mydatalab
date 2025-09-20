@@ -29,6 +29,48 @@ else:
 matplotlib.rcParams["axes.unicode_minus"] = False
 
 st.set_page_config(page_title="데이터분석 (4) 예측 실행", page_icon="📊", layout="centered")
+hide_default_sidebar = """
+    <style>
+    [data-testid="stSidebarNav"] {
+        display: none;
+    }
+    </style>
+"""
+st.markdown(hide_default_sidebar, unsafe_allow_html=True)
+# --- 예시 모드 잔여 상태 정리 (강화판) ---
+demo_markers = (
+    "demo_active", "demo_recent", "demo_seeded_xy",
+    "demo_subject", "demo_x_label", "demo_y_label",
+    "demo_table_data", "demo_x_values", "demo_y_values", "demo_analysis_text"
+)
+
+reset_needed = (
+    st.session_state.pop("came_from_demo", False) or
+    st.session_state.pop("demo_seeded_xy", False) or
+    st.session_state.pop("demo_recent", False) or
+    st.session_state.get("demo_active", False) or
+    any(k in st.session_state for k in demo_markers)
+)
+
+if reset_needed:
+    # 예측/학습 관련 상태
+    for k in (
+        "lr_value", "epochs_value", "predict_requested",
+        "attempt_count", "history", "selected_model_indices",
+        "predict_summary"
+    ):
+        st.session_state.pop(k, None)
+
+    # 예시에서 실제 키로 주입됐을 수 있는 분석 키
+    for k in ("x_values", "y_values", "x_label", "y_label", "table_data",
+              "analysis_text", "show_plot", "data_editor"):
+        st.session_state.pop(k, None)
+
+    # 데모 표식 및 흔적 제거
+    for k in demo_markers:
+        st.session_state.pop(k, None)
+
+    st.rerun()
 
 # =========================
 # 유틸: 쿼리 파라미터
@@ -46,6 +88,7 @@ def _set_query_params(**kwargs):
             st.query_params[k] = v
     except Exception:
         st.experimental_set_query_params(**kwargs)
+
 
 # =========================
 # 배너 + 챗봇
