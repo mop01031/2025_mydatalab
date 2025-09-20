@@ -165,7 +165,7 @@ with ep_col4:
 # =========================
 # 예측 실행 버튼 (수동 재실행용)
 # =========================
-if st.button("📈 예측 실행(다시 계산)"):
+if st.button("📈 예측 실행"):
     x_arr = np.array(x_raw); y_arr = np.array(y_raw)
     if len(x_arr) < 2 or np.std(x_arr) == 0 or np.any(np.isnan(x_arr)) or np.any(np.isnan(y_arr)):
         st.session_state.predict_requested = False
@@ -318,5 +318,5 @@ if st.session_state.predict_requested:
     with colC:
         if st.button("➡️ 다음", key="go_summary_demo"):
             st.session_state["predict_summary"] = predict_text
-            st.switch_page("pages/17_data_analysis_5_summary.py")
+            st.switch_page("pages/17_data_analysis_5_summary_2.py")
 
