@@ -2,10 +2,9 @@ import streamlit as st
 from PIL import Image
 
 st.set_page_config(
-    page_title="Dr.이음이와 떠나는 데이터 탐험",
-    page_icon="🚀",
+    page_title="나만의 데이터 연구소",
+    page_icon="🤖",
     layout="wide",
-    initial_sidebar_state="collapsed"   # 🔹 사이드바 기본 접기
 )
 
 # 🔒 랜딩 페이지: 사이드바/헤더/툴바까지 전부 숨김

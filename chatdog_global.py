@@ -1,4 +1,3 @@
-# chatdog_global.py
 from __future__ import annotations
 import base64
 from pathlib import Path
@@ -49,6 +48,7 @@ DEFAULT_SYSTEM = """
 - 말할 때 마다 '안녕?'은 하지 않아도 돼. 자연스럽게 대화를 이어나가 줘.
 - 리스트/소제목으로 정리해서 답해줘.
 - 이미지나 오디오, 동영상은 절대 생성해선 안돼.
+- '데이터 분석 주제'에 관련한 질문을 했을 경우, 국가 통계 포털과 같은 수치형 데이터를 분석할 수 있는 주제만을 제시해야 해.
 ---
 
 ## 🚫 답변 제한
@@ -75,7 +75,6 @@ def mount_chatdog(
     panel_top_css: str = "10dvh",
     panel_height_css: str = "70dvh",
 ):
-    """우하단 강아지 버튼 + 오른쪽 패널을 부모 문서(Shadow DOM)로 삽입"""
     dog_b64 = _b64(dog_image)
 
     html_str = f"""
@@ -85,7 +84,6 @@ def mount_chatdog(
   const P = G.document || document;
   const HOST_ID = "chatdog-host-v2";
 
-  // 항상 새로 만들되, 이전 것이 있다면 제거(리스너 꼬임 방지)
   const exist = P.getElementById(HOST_ID);
   if (exist) exist.remove();
 
@@ -103,10 +101,8 @@ def mount_chatdog(
   const DOG_B64   = "data:image/png;base64,{dog_b64}";
   const STORE_KEY = "chatdog_history_v1";
 
-  // ★★★ 추가: 강제 새로고침 감지용 세션 플래그
   const RESET_FLAG = "chatdog_reset_pending";
 
-  // 호스트(0x0) + Shadow DOM
   const host = P.createElement("div");
   host.id = HOST_ID;
   host.style.position = "fixed";
@@ -120,7 +116,6 @@ def mount_chatdog(
 <style>
   :host {{
   all: initial;
-  /* ✅ iOS 안전영역 전부 선언 */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -133,7 +128,6 @@ def mount_chatdog(
   right: ${'{' }FAB_RIGHT{ '}' }px;
   bottom: calc(${'{' }FAB_BOTTOM{ '}' }px + var(--safe-bottom));
 
-  /* ✅ 연속 스케일: 최소~이상적(vw)~최대 */
   width: clamp(96px, 22vw, ${'{' }FAB_SIZE{ '}' }px);
   height: clamp(96px, 22vw, ${'{' }FAB_SIZE{ '}' }px);
 
@@ -187,8 +181,7 @@ def mount_chatdog(
   #input{{height:44px;border:1px solid #cbd5e1;border-radius:12px;padding:0 12px;font:16px system-ui}}
   #send{{height:44px;border:0;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;font:700 15px system-ui;cursor:pointer}}
 
-/* 반응형 오버라이드 (교체본) --------------------------------------- */
-/* ✅ 태블릿: 641~1024px — ‘다음’ 버튼 겹침 방지 + 패널 살짝 내림 */
+/* 태블릿: 641~1024px*/
 @media (min-width: 641px) and (max-width: 1024px){{
   #fab{{
     width: clamp(100px, 18vw, 180px) !important;
@@ -204,7 +197,7 @@ def mount_chatdog(
   }}
 }}
 
-/* ✅ 휴대폰(≤640px) — bottom 고정 + svh 기반 */
+/* 휴대폰(≤640px) */
 @media (max-width: 640px){{
   #fab{{
     width: clamp(120px, 32vw, 220px) !important;
@@ -218,24 +211,20 @@ def mount_chatdog(
     position: fixed !important;
     box-sizing: border-box !important;
 
-    /* ▶ 좌우를 안전영역에 맞춰 “끼우기” */
     left: var(--safe-left) !important;
     right: var(--safe-right) !important;
     width: auto !important;
 
-    /* ▶ 상단 고정(❌) 대신 하단 기준(✅)으로 끌어올림 */
     top: auto !important;
     bottom: calc(var(--safe-bottom) + 8px) !important;
 
-    /* ▶ 화면 높이 변동에도 안정: svh + 안전영역만큼만 제한 */
     height: min(88svh, calc(100svh - var(--safe-top) - var(--safe-bottom) - 24px)) !important;
 
     padding: 10px max(12px, var(--safe-right)) 10px max(12px, var(--safe-left)) !important;
     z-index: 100003 !important;
-    overflow: hidden !important;  /* 내부 스크롤만 사용 */
+    overflow: hidden !important;  
   }}
 
-  /* 헤더는 항상 보이게 */
   .hdr{{
     position: sticky !important;
     top: 0 !important;
@@ -245,7 +234,6 @@ def mount_chatdog(
     padding: 8px max(12px, var(--safe-right)) 8px max(12px, var(--safe-left)) !important;
   }}
 
-  /* 본문 스크롤 안정화 */
   #body{{
     overflow: auto !important;
     overscroll-behavior: contain !important;
@@ -261,7 +249,7 @@ def mount_chatdog(
   #send{{ height: 42px !important; font-size: 14px !important; }}
 }}
 
-/* ✅ 초소형(≤380px) — 같은 로직, 살짝 더 여백 */
+/* 초소형(≤380px)*/
 @media (max-width: 380px){{
   #fab{{
     width: clamp(110px, 34vw, 190px) !important;
@@ -318,7 +306,6 @@ def mount_chatdog(
   const send  = root.getElementById("send");
   const closeBtn = root.getElementById("close");
 
-  // ★★★ 추가: Ctrl/⌘+R 또는 F5 입력 시, 다음 로드에서 리셋하도록 세션 플래그 설정
   G.addEventListener("keydown", (e) => {{
     const k = (e.key || "").toLowerCase();
     if (k === "f5" || ((e.ctrlKey || e.metaKey) && k === "r")) {{
@@ -326,7 +313,6 @@ def mount_chatdog(
     }}
   }});
 
-  // ★★★ 추가: 로드 시 플래그 확인 → 한 번만 기록 초기화
   try {{
     if (G.sessionStorage.getItem(RESET_FLAG) === "1") {{
       P.defaultView.localStorage.removeItem(STORE_KEY);
@@ -336,7 +322,7 @@ def mount_chatdog(
     console.warn("reset flag check failed", e);
   }}
 
-  // ── 저장/복원(페이지 이동 간 유지) ─────────────────────────────────
+  // ── 저장/복원(페이지 이동 간 유지) 
   let raw = null;
   try {{
     raw = JSON.parse(P.defaultView.localStorage.getItem(STORE_KEY) || "null");
@@ -357,7 +343,7 @@ def mount_chatdog(
     P.defaultView.localStorage.setItem(STORE_KEY, JSON.stringify(payload));
   }};
 
-  // ── Markdown 렌더러 ──────────────────────────────────────────────
+  
   function md(text){{
     let s = (text || "").replace(/[&<>"']/g, c => ({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}})[c]);
     s = s
@@ -442,5 +428,4 @@ def mount_chatdog(
 }})();
 </script>
 """
-    # 부모에 붙이므로 iframe 자체 높이는 1로 충분
     html(html_str, height=1, scrolling=False)
