@@ -101,7 +101,7 @@ def mount_chatdog(
     *,
     dog_image: str | Path,
     api_url: str,
-    model: str = "gpt-3.5-turbo",
+    model: str = "gpt-4.1-mini",
     temperature: float = 0.6,
     max_tokens: int = 600,
     system_prompt: str = DEFAULT_SYSTEM,

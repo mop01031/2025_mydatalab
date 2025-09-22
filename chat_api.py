@@ -39,7 +39,7 @@ app.add_middleware(
 
 class ChatRequest(BaseModel):
     prompt: str
-    model: str = "gpt-3.5-turbo"  
+    model: str = "gpt-4.1-mini"  
     temperature: float = 0.6
     max_tokens: int = 600
     system: str | None = None

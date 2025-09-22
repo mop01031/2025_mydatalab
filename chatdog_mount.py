@@ -9,7 +9,7 @@ def mount():
     mount_chatdog(
         dog_image="images/chatdog_with_balloon.png",
         api_url=API_URL,               
-        model="gpt-3.5-turbo",         
+        model="gpt-4.1-mini",         
         temperature=0.6,
         max_tokens=600,
         fab_size_px=250,
