@@ -56,9 +56,9 @@ with st.sidebar:
     st.page_link("pages/16_data_analysis_4_prediction_2.py", label="(4) 예측 실행")
     st.page_link("pages/17_data_analysis_5_summary_2.py", label="(5) 요약 결과")
 # --- 선행 단계 확인 (예시 모드가 아니면 체크, 예시 모드면 우회) ---
-if not st.session_state.get("demo_active", False) and "name" not in st.session_state:
-    st.warning("이전 단계에서 데이터를 먼저 입력해 주세요.")
-    st.stop()
+#if not st.session_state.get("demo_active", False) and "name" not in st.session_state:
+    #st.warning("이전 단계에서 데이터를 먼저 입력해 주세요.")
+   # st.stop()
 
 # --- 주제 입력(예시 모드에서는 항상 기본문구를 우선) ---
 subject = st.text_area(
