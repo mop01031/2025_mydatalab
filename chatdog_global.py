@@ -227,7 +227,7 @@ def mount_chatdog(
     width: clamp(100px, 18vw, 180px) !important;
     height: clamp(100px, 18vw, 180px) !important;
     right: 24px !important;
-    bottom: calc(150px + var(--safe-bottom)) !important; /* ← 겹치면 170~180px */
+    bottom: calc(180px + var(--safe-bottom)) !important; /* ← 겹치면 170~180px */
     z-index: 100002 !important;
   }}
   #panel{{
